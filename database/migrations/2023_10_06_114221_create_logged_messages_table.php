@@ -18,7 +18,6 @@ return new class extends Migration
             $table->binary('new_data')->nullable();
             $table->binary('user_data');
             $table->string('route');
-            $table->integer('user_id');
             $table->string('ip_address');
             $table->timestamps();
         });
