@@ -9,8 +9,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -30,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
         'encryption_key'
     ];
 
@@ -43,6 +44,15 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+    ];
+
+    /**
+     * The attributes that set default values.
+     *
+     * @var array<int, string>
+     */
+    protected $attributes = [
+        'role_id' => '1'
     ];
 
     /**
@@ -62,4 +72,14 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url'
     ];
+
+    /**
+     * Get the role associated with the user.
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class)->withDefault([
+            'name' => 'Member',
+        ]);
+    }
 }
