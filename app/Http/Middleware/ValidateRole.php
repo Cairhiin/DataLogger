@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ValidateRole
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request and check the role of the user.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
