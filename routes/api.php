@@ -14,4 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->post('/message', [MessageController::class, 'create']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/events/message', [MessageController::class, 'create'])->name('message.create');
+    Route::post('/events/log', [LogController::class, 'create'])->name('log.create');
+});
