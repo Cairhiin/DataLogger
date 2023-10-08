@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('logged_messages', function (Blueprint $table) {
             $table->id();
-            $table->enum('event_name', ['update', 'create', 'delete']);
-            $table->binary('original_data')->nullable();
-            $table->binary('new_data')->nullable();
-            $table->binary('user_data');
+            $table->enum('event_type', ['update', 'create', 'delete']);
+            $table->text('original_data')->nullable();
+            $table->text('new_data')->nullable();
+            $table->text('user_email');
             $table->string('route');
             $table->string('ip_address');
             $table->timestamps();

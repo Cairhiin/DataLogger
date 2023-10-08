@@ -4,7 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Utilities\Encryption;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Notifications\Notifiable;
@@ -31,7 +30,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'encryption_key'
+        'encryption_key',
+        'api_token',
     ];
 
     /**
@@ -41,6 +41,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'encryption_key',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',

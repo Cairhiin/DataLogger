@@ -13,7 +13,7 @@ class LoggedMessage extends Model
         'event_name',
         'original_data',
         'new_data',
-        'user_data',
+        'user_email',
         'route',
         'ip_address',
     ];

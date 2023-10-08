@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/events/message', [MessageController::class, 'create'])->name('message.create');
-    Route::post('/events/log', [LogController::class, 'create'])->name('log.create');
+Route::prefix('event')->middleware('auth:sanctum')->group(function () {
+    Route::post('/message', [MessageController::class, 'create'])->name('event.message.create');
+    Route::post('/log', [LogController::class, 'create'])->name('event.log.create');
 });

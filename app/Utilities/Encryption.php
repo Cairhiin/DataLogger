@@ -20,7 +20,7 @@ class Encryption
         if ($resource == null || $resource == '') {
             return $resource;
         }
-        $code = unpack("H*", file_get_contents(config_path() . "/.server_key.enc"));
+        $code = unpack("H*", env("ENC_KEY"));
         $code = array_pop($code);
         $code_key = hex2bin($code);
 
@@ -46,7 +46,7 @@ class Encryption
     public static function decryptPersonal($user_id, $resource)
     {
         $user = User::findOrFail($user_id);
-        $code = unpack("H*", file_get_contents(config_path() . "/.server_key.enc"));
+        $code = unpack("H*", env("ENC_KEY"));
         $code = array_pop($code);
         $code_key = hex2bin($code);
 
@@ -107,7 +107,7 @@ class Encryption
         if ($resource == null || $resource == '') {
             return $resource;
         }
-        $code = unpack("H*", file_get_contents(config_path() . "/.server_key.enc"));
+        $code = unpack("H*", env("ENC_KEY"));
         $code = array_pop($code);
         $code_key = hex2bin($code);
 
