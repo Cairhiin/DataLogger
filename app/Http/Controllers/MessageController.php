@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LoggedMessage;
+use App\Models\LogEntry;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -10,7 +10,7 @@ class MessageController extends Controller
     public function create(Request $request)
     {
         if ($request->user()->tokenCan('log:create')) {
-            LoggedMessage::create([
+            LogEntry::create([
                 'original_data' => serialize($request->originalData),
                 'new_data' => serialize($request->newData),
                 'user_email' => $request->userEmail,

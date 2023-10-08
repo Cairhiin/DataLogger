@@ -15,7 +15,7 @@ class Encryption
      * @param String $resource
      * @return void
      */
-    public static function encrypt_using_key($key, $resource)
+    public static function encryptUsingKey($key, $resource)
     {
         if ($resource == null || $resource == '') {
             return $resource;
@@ -102,7 +102,7 @@ class Encryption
      * @param String $resource
      * @return String $plaintext
      */
-    public static function decrypt_using_key($key, $resource)
+    public static function decryptUsingKey($key, $resource)
     {
         if ($resource == null || $resource == '') {
             return $resource;
