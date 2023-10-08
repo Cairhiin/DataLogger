@@ -32,7 +32,7 @@ class LogController extends Controller
                 'user_email' => Encryption::encryptUsingKey($enc_key, $request->userEmail),
                 'event_type' => $request->eventType,
                 'route' => $request->route,
-                'ip_address' => $request->ip
+                'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
             ]);
 
             return ["Status" => "Success", "Message" => "Entered new log event!"];
@@ -50,11 +50,10 @@ class LogController extends Controller
             $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
             $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
             $log->user_email = Encryption::decryptUsingKey($enc_key, $log->user_email);
+            $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
         }
 
-        echo ($logs);
-
-        return Inertia::render('LogEntries', [
+        return Inertia::render('Event/LogEntries', [
             'logEntries' => $logs,
         ]);
     }
