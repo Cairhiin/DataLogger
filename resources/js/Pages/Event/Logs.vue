@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Log Entries">
+    <app-layout title="Log Entries">
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
@@ -8,17 +8,17 @@
                 <div>Route</div>
                 <div>Event</div>
             </div>
-            <EventList :events="logs.data" @show-details="showDetails" />
+            <event-list :events="logs.data" @show-details="showDetails" />
         </div>
         <pagination :links="logs.links" />
-        <Modal :show="modalIsShowing">
-            <div class="p-4">{{ modalContent }}</div>
-            <div class="border-t border-gray-300 p-4 flex justify-end gap-4">
-                <SecondaryButton>Sluiten</SecondaryButton>
-                <DangerButton>Verwijderen</DangerButton>
+        <modal :show="modalIsShowing">
+            <event-details :event="modalContent" />
+            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-end gap-4">
+                <secondary-button @click="hideDetails">Sluiten</secondary-button>
+                <danger-button>Verwijderen</danger-button>
             </div>
-        </Modal>
-    </AppLayout>
+        </modal>
+    </app-layout>
 </template>
 
 <script>
@@ -26,6 +26,7 @@ import Pagination from '@/Components/Custom/Pagination.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import EventList from '@/Components/Events/EventList.vue';
 import Modal from '@/Components/Modal.vue';
+import EventDetails from '@/Components/Events/EventDetails.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
@@ -50,12 +51,16 @@ export default {
         Modal,
         SecondaryButton,
         DangerButton,
+        EventDetails,
         AppLayout,
     },
     methods: {
         showDetails(id) {
             this.selectedId = id;
             this.modalIsShowing = true;
+        },
+        hideDetails() {
+            this.modalIsShowing = false;
         }
     }
 }
