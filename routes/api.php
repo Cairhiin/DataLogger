@@ -16,6 +16,6 @@ use App\Http\Controllers\MessageController;
 */
 
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
-    Route::post('/message', [MessageController::class, 'create'])->name('event.message.create');
-    Route::post('/log', [LogController::class, 'create'])->name('event.log.create');
+    Route::post('/message', [MessageController::class, 'store'])->name('event.message.store');
+    Route::post('/log', [LogController::class, 'store'])->name('event.log.store');
 });

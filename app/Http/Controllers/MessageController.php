@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    public function create(Request $request)
+    public function store(Request $request)
     {
         if ($request->user()->tokenCan('log:create')) {
             LogEntry::create([

@@ -10,7 +10,7 @@ use App\Utilities\Encryption;
 
 class LogController extends Controller
 {
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $user = User::where('email', $request->userEmail)->get();
         $enc_key = '';
@@ -43,7 +43,7 @@ class LogController extends Controller
 
     public function index()
     {
-        $logs = LogEntry::all();
+        $logs = LogEntry::paginate(15);
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
         foreach ($logs as $log) {
