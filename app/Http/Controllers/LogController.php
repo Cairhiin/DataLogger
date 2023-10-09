@@ -43,7 +43,7 @@ class LogController extends Controller
 
     public function index()
     {
-        $logs = LogEntry::paginate(15);
+        $logs = LogEntry::paginate(5);
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
         foreach ($logs as $log) {
