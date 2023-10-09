@@ -27,6 +27,7 @@ class LogController extends Controller
 
         if ($request->user()->tokenCan('log:create')) {
             LogEntry::create([
+                'model' => $request->model,
                 'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->originalData)),
                 'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->newData)),
                 'user_email' => Encryption::encryptUsingKey($enc_key, $request->userEmail),
@@ -43,7 +44,7 @@ class LogController extends Controller
 
     public function index()
     {
-        $logs = LogEntry::paginate(5);
+        $logs = LogEntry::orderBy('created_at', 'DESC')->paginate(5);
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
         foreach ($logs as $log) {
@@ -53,8 +54,8 @@ class LogController extends Controller
             $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
         }
 
-        return Inertia::render('Event/LogEntries', [
-            'logEntries' => $logs,
+        return Inertia::render('Event/Logs', [
+            'logs' => $logs,
         ]);
     }
 }

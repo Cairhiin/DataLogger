@@ -13,6 +13,7 @@ class LogEntry extends Model
 
     protected $fillable = [
         'event_name',
+        'model',
         'original_data',
         'new_data',
         'user_email',
@@ -23,6 +24,10 @@ class LogEntry extends Model
     protected $decryptable = [
         'original_data',
         'new_data',
-        'user_data',
+        'user_email',
+    ];
+
+    protected $hidden = [
+        'user_email'
     ];
 }

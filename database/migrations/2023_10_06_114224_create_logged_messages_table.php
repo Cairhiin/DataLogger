@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('logged_messages', function (Blueprint $table) {
             $table->id();
             $table->enum('event_type', ['update', 'create', 'delete']);
+            $table->string('model');
             $table->text('original_data')->nullable();
             $table->text('new_data')->nullable();
             $table->text('user_email');
