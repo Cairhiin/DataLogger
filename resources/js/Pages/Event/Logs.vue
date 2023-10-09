@@ -3,9 +3,8 @@
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
-                <div>Datum</div>
-                <div>IP</div>
-                <div>Model</div>
+                <div class="col-span-2">Datum</div>
+                <div>Data</div>
                 <div>Route</div>
                 <div>Event</div>
             </div>
