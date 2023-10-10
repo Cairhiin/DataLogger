@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class LogController extends Controller
 {
@@ -81,5 +83,24 @@ class LogController extends Controller
         $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
 
         return $log;
+    }
+
+    public function testRabbitMQ(Request $request)
+    {
+        $connection = new AMQPStreamConnection(
+            env('MQ_HOST'),
+            env('MQ_PORT'),
+            env('MQ_USER'),
+            env('MQ_PASS'),
+            env('MQ_VHOST')
+        );
+        $channel = $connection->channel();
+
+        $channel->queue_declare('msgs', false, false, false, false);
+
+        $msg = new AMQPMessage('Hello Pia!');
+        $channel->basic_publish($msg, '', 'msgs');
+
+        return "[x] Message sent!";
     }
 }
