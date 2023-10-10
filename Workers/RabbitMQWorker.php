@@ -1,9 +1,11 @@
 <?php
+
 $upOne = realpath(__DIR__ . '/..');
 require_once $upOne . '/vendor/autoload.php';
 
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+
 
 $exchange = 'router';
 $queue = 'msgs';
