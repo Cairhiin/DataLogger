@@ -96,7 +96,7 @@ class LogController extends Controller
         );
         $channel = $connection->channel();
 
-        $channel->queue_declare('msgs', false, false, false, false);
+        $channel->queue_declare('msgs', true, false, false, false);
 
         $msg = new AMQPMessage('Hello Pia!');
         $channel->basic_publish($msg, '', 'msgs');
