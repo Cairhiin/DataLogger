@@ -12,7 +12,7 @@ class LogEntry extends Model
     protected $table = 'logged_messages';
 
     protected $fillable = [
-        'event_name',
+        'event_type',
         'model',
         'original_data',
         'new_data',

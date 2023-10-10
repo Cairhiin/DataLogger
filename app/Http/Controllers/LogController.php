@@ -42,9 +42,20 @@ class LogController extends Controller
         return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $logs = LogEntry::orderBy('created_at', 'DESC')->paginate(5);
+        $logs = LogEntry::query()
+            ->when($request->model, function ($query) use ($request) {
+                return $query->where('model', '=', $request->model);
+            })
+            ->when($request->route, function ($query) use ($request) {
+                return $query->where('route', '=', $request->route);
+            })
+            ->when($request->event, function ($query) use ($request) {
+                return $query->where('event_type', '=', $request->event);
+            })
+            ->orderBy('created_at', 'DESC')
+            ->paginate(15);
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
         foreach ($logs as $log) {
