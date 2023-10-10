@@ -38,6 +38,7 @@ Route::middleware([
 });
 
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
-    Route::get('message', [MessageController::class, 'index'])->name('event.message');
-    Route::get('log', [LogController::class, 'index'])->name('event.log');
+    Route::get('messages', [MessageController::class, 'index'])->name('event.messages.index');
+    Route::get('logs', [LogController::class, 'index'])->name('event.logs.index');
+    Route::get('logs/{id}', [LogController::class, 'show'])->name('event.logs.show');
 });

@@ -24,13 +24,13 @@
             <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-700 uppercase">Type:</div>
             <div class="text-zinc-900 dark:text-zinc-100">{{ event.event_type }}</div>
         </div>
-        <div class="flex items-center">
-            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-700 uppercase">Nieuwe Data:</div>
-            <div class="text-zinc-900 dark:text-zinc-100">{{ formatData(event.new_data) }}</div>
+        <div class="grid grid-cols-5 items-center">
+            <div class="text-sm font-bold dark:text-zinc-400 text-zinc-700 uppercase">Nieuwe Data:</div>
+            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ formatData(event.new_data) }}</div>
         </div>
-        <div class="flex items-center">
-            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-700 uppercase">Oude Data:</div>
-            <div class="text-zinc-900 dark:text-zinc-100">{{ formatData(event.original_data) }}</div>
+        <div class="grid grid-cols-5 items-center">
+            <div class="text-sm font-bold dark:text-zinc-400 text-zinc-700 uppercase">Oude Data:</div>
+            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ formatData(event.original_data) }}</div>
         </div>
     </div>
 </template>

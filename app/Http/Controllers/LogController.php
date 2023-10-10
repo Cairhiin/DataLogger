@@ -59,8 +59,6 @@ class LogController extends Controller
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
         foreach ($logs as $log) {
-            $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
-            $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
             $log->user_email = Encryption::decryptUsingKey($enc_key, $log->user_email);
             $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
         }
@@ -68,5 +66,20 @@ class LogController extends Controller
         return Inertia::render('Event/Logs', [
             'logs' => $logs,
         ]);
+    }
+
+    public function show(Request $request)
+    {
+        $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+
+        if ($enc_key == '') {
+            return ["Status" => "Error", "Message" => "No encryption key set!"];
+        }
+
+        $log = LogEntry::findOrFail($request->id);
+        $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
+        $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
+
+        return $log;
     }
 }
