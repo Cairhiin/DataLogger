@@ -8,34 +8,11 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 $exchange = 'router';
 $queue = 'msgs';
 $consumerTag = 'consumer';
-$connection = new AMQPStreamConnection();
+$connection = new AMQPStreamConnection('localhost', 5672, 'worthitIT', '2a55f70a841f1gh822baa97c3gga7dkkob9839b7adc9e34a0f1b', 'datalogger');
 $channel = $connection->channel();
 
-/*
-    The following code is the same both in the consumer and the producer.
-    In this way we are sure we always have a queue to consume from and an
-        exchange where to publish messages.
-*/
-
-/*
-    name: $queue
-    passive: false
-    durable: true // the queue will survive server restarts
-    exclusive: false // the queue can be accessed in other channels
-    auto_delete: false //the queue won't be deleted once the channel is closed.
-*/
 $channel->queue_declare($queue, true, true, false, false);
-
-/*
-    name: $exchange
-    type: direct
-    passive: false
-    durable: true // the exchange will survive server restarts
-    auto_delete: false //the exchange won't be deleted once the channel is closed.
-*/
-
 $channel->exchange_declare($exchange, AMQPExchangeType::DIRECT, false, true, false);
-
 $channel->queue_bind($queue, $exchange);
 
 /**
@@ -55,16 +32,6 @@ function process_message($message)
     }
 }
 
-/*
-    queue: Queue from where to get the messages
-    consumer_tag: Consumer identifier
-    no_local: Don't receive messages published by this consumer.
-    no_ack: If set to true, automatic acknowledgement mode will be used by this consumer. See https://www.rabbitmq.com/confirms.html for details.
-    exclusive: Request exclusive consumer access, meaning only this consumer can access the queue
-    nowait:
-    callback: A PHP Callback
-*/
-
 $channel->basic_consume($queue, $consumerTag, false, false, false, false, 'process_message');
 
 /**
@@ -79,7 +46,6 @@ function shutdown($channel, $connection)
 
 register_shutdown_function('shutdown', $channel, $connection);
 
-// Loop as long as the channel has callbacks registered
 while ($channel->is_consuming()) {
     $channel->wait();
 }
