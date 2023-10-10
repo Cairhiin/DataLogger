@@ -8,7 +8,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 $exchange = 'router';
 $queue = 'msgs';
 $consumerTag = 'consumer';
-$connection = new AMQPStreamConnection('localhost', 5672, 'worthitIT', '2a55f70a841f1gh822baa97c3gga7dkkob9839b7adc9e34a0f1b', 'datalogger');
+$connection = new AMQPStreamConnection();
 $channel = $connection->channel();
 
 /*
