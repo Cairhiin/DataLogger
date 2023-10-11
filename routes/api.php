@@ -18,5 +18,4 @@ use App\Http\Controllers\MessageController;
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     Route::post('/message', [MessageController::class, 'store'])->name('event.message.store');
     Route::post('/log', [LogController::class, 'store'])->name('event.log.store');
-    Route::post('/test', [LogController::class, 'testRabbitMQ'])->name('event.test.store');
 });

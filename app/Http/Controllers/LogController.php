@@ -91,17 +91,4 @@ class LogController extends Controller
 
         return $log;
     }
-
-    public function testRabbitMQ(Request $request)
-    {
-        $data = [
-            'ip_address' => '127.0.0.1',
-            'route' => 'profile.update',
-            'new_data' => 'Kirkkokatu',
-            'original_data' => 'Kymenlaaksonkatu',
-            'user_email' => 'info@worthIT-it.com',
-            'event_type' => 'update',
-            'model' => 'Address'
-        ];
-    }
 }
