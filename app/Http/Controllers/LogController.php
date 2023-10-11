@@ -7,28 +7,25 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 class LogController extends Controller
 {
     public function store(Request $request)
     {
-        echo "email: " . $request->user_email;
-        $user = User::where('email', $request->user_email)->get();
         $enc_key = '';
 
-        if (!$user->isEmpty()) {
-            $enc_key = $user->first()->encryption_key;
+        // Check if the user is allowed to create new log entries
+        if ($request->user()->tokenCan('log:create')) {
+            $enc_key = $request->user()->encryption_key;
         } else {
-            return ["Status" => "Error", "Message" => "Invalid email address!"];
+            return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
         }
 
         if ($enc_key == '') {
             return ["Status" => "Error", "Message" => "No encryption key set!"];
         }
 
-
+        // Validate the request before encrypting it
         $validated = $request->validate([
             'original_data' => 'required',
             'new_data' => 'required',
@@ -39,22 +36,19 @@ class LogController extends Controller
             'ip' => 'required'
         ]);
 
-        if ($request->user()->tokenCan('log:create')) {
-            $log = [
-                'model' => $request->model,
-                'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
-                'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
-                'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
-                'event_type' => $request->event_type,
-                'route' => $request->route,
-                'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
-            ];
+        $log = [
+            'model' => $request->model,
+            'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
+            'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
+            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
+            'event_type' => $request->event_type,
+            'route' => $request->route,
+            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
+        ];
 
-            $mqService = new \App\Services\RabbitMQService();
-            $mqService->publish(serialize($log));
-        } else {
-            return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
-        }
+        // Serialize the log data and publish it on the RabbitMQ stream
+        $mqService = new \App\Services\RabbitMQService();
+        $mqService->publish(serialize($log));
     }
 
     public function index(Request $request)
