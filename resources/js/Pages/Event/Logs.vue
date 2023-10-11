@@ -3,10 +3,10 @@
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
-                <div class="col-span-2">Datum</div>
+                <div class="col-span-2">Date</div>
                 <div>Data</div>
                 <div>Route</div>
-                <div>Applicatie</div>
+                <div>Application ID</div>
             </div>
             <event-list :events="logs.data" @show-details="showDetails" />
         </div>
@@ -16,10 +16,10 @@
                 <div>
                     <label for="filter">Filter:</label>
                     <select id="filter" v-model="form.filter">
-                        <option disabled value="">Kies een filter optie</option>
+                        <option disabled value="">Choose a filter option</option>
                         <option value="model">Data</option>
                         <option value="route">Route</option>
-                        <option value="event">Applicatie</option>
+                        <option value="event">Application ID</option>
                     </select>
                     <input id="param" v-model="form.param" />
                 </div>
@@ -28,15 +28,15 @@
         </div>
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-end gap-4">
+            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-end gap-6">
                 <secondary-button @click="hideDetails">
                     <span class="text-base fa fa-solid fa-xmark"></span>
-                    &nbsp;&nbsp;Sluiten</secondary-button>
+                    &nbsp;&nbsp;Close</secondary-button>
                 <secondary-button @click="decryptData">
-                    <span v-if="isLoading" class="text-sm fa fa-solid fa-spinner fa-spin"></span>
-                    <span v-if="!isLoading" class="text-sm fa fa-solid fa-key"></span>
+                    <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
+                    <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
                     &nbsp;&nbsp;Decrypt</secondary-button>
-                <danger-button>Verwijderen</danger-button>
+                <danger-button>Delete</danger-button>
             </div>
         </modal>
     </app-layout>

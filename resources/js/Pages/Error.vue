@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Error Page">
         <section class="grid items-center max-w-5xl mx-auto px-12">
-            <div class="py-12 dark:bg-slate-800/50 bg-slate-400/50 rounded-lg text-center shadow">
+            <div class="my-24 py-12 dark:bg-slate-800/50 bg-slate-400/50 rounded-lg text-center shadow">
                 <div class="max-w-7xl mx-auto px-4 sm:px-20 lg:px-32">
                     <h3 class="font-semibold font-heading text-3xl text-zinc-800 leading-tight dark:text-zinc-100">
                         <span class="uppercase text-sky-400 font-heading text-5xl">{{ error.status

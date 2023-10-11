@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LogController extends Controller
 {
@@ -69,7 +70,17 @@ class LogController extends Controller
             ->orderBy('created_at', 'DESC')
             ->paginate(15);
 
-        $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+        try {
+            $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+        } catch (ModelNotFoundException $e) {
+            return Inertia::render('Error', [
+                'error' => ["status" => "404 Not Found", "message" => [
+                    "header" => "The requested resources was not found!",
+                    "info" => "There appears to be a problem with your user account."
+                ]],
+            ]);
+        }
+
         if (!$enc_key || $enc_key == "") {
             return Inertia::render('Error', [
                 'error' => ["status" => "400 Bad Request", "message" => [
@@ -91,7 +102,16 @@ class LogController extends Controller
 
     public function show(Request $request)
     {
-        $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+        try {
+            $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+        } catch (ModelNotFoundException $e) {
+            return Inertia::render('Error', [
+                'error' => ["status" => "404 Not Found", "message" => [
+                    "header" => "The requested resources was not found!",
+                    "info" => "There appears to be a problem with your user account."
+                ]],
+            ]);
+        }
 
         if (!$enc_key || $enc_key == "") {
             return Inertia::render('Error', [
@@ -102,7 +122,17 @@ class LogController extends Controller
             ]);
         }
 
-        $log = LogEntry::findOrFail($request->id);
+        try {
+            $log = LogEntry::findOrFail($request->id);
+        } catch (ModelNotFoundException $e) {
+            return Inertia::render('Error', [
+                'error' => ["status" => "404 Not Found", "message" => [
+                    "header" => "The requested resources was not found!",
+                    "info" => "There appears to be a problem finding the requested resource."
+                ]],
+            ]);
+        }
+
         $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
         $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
 
