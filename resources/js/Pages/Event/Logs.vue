@@ -28,15 +28,21 @@
         </div>
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-end gap-6">
-                <secondary-button @click="hideDetails">
-                    <span class="text-base fa fa-solid fa-xmark"></span>
-                    &nbsp;&nbsp;Close</secondary-button>
-                <secondary-button @click="decryptData">
-                    <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
-                    <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
-                    &nbsp;&nbsp;Decrypt</secondary-button>
-                <danger-button>Delete</danger-button>
+            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-between items-center">
+                <div class="text-red-600 font-bold text-sm uppercase"><span
+                        :class="{ 'fa fa-solid fa-warning': error }"></span>&nbsp;&nbsp;{{
+                            error }}
+                </div>
+                <div class="flex justify-end  gap-6">
+                    <secondary-button @click="hideDetails">
+                        <span class="text-base fa fa-solid fa-xmark"></span>
+                        &nbsp;&nbsp;Close</secondary-button>
+                    <secondary-button @click="decryptData">
+                        <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
+                        <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
+                        &nbsp;&nbsp;Decrypt</secondary-button>
+                    <danger-button>Delete</danger-button>
+                </div>
             </div>
         </modal>
     </app-layout>
@@ -71,7 +77,8 @@ export default {
                 filter: null,
                 param: null,
             },
-            isLoading: false
+            isLoading: false,
+            error: null
         }
     },
     computed: {
@@ -117,6 +124,7 @@ export default {
         },
         hideDetails() {
             this.modalIsShowing = false;
+            this.error = null;
             const log = this.getSelectedLog();
 
             if (this.decrypted.original_data) {
@@ -133,13 +141,17 @@ export default {
             this.isLoading = true;
             axios.get(`/event/logs/${this.selectedId}/`)
                 .then(response => {
-                    this.decrypted.original_data = response.data.original_data;
-                    this.decrypted.new_data = response.data.new_data;
+                    if (response.data.error) {
+                        this.error = response.data.error.status;
+                    } else {
+                        this.decrypted.original_data = response.data.original_data;
+                        this.decrypted.new_data = response.data.new_data;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
-                .finally(() => {
+                .finally((res) => {
                     this.isLoading = false;
                 });
         },

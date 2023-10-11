@@ -105,32 +105,32 @@ class LogController extends Controller
         try {
             $enc_key = User::findOrFail(Auth()->id())->encryption_key;
         } catch (ModelNotFoundException $e) {
-            return Inertia::render('Error', [
+            return [
                 'error' => ["status" => "404 Not Found", "message" => [
                     "header" => "The requested resources was not found!",
                     "info" => "There appears to be a problem with your user account."
                 ]],
-            ]);
+            ];
         }
 
         if (!$enc_key || $enc_key == "") {
-            return Inertia::render('Error', [
+            return [
                 'error' => ["status" => "400 Bad Request", "message" => [
                     "header" => "You do not have an encryption key!",
                     "info" => "Please contact an administrator for more information."
-                ]],
-            ]);
+                ]]
+            ];
         }
 
         try {
             $log = LogEntry::findOrFail($request->id);
         } catch (ModelNotFoundException $e) {
-            return Inertia::render('Error', [
+            return  [
                 'error' => ["status" => "404 Not Found", "message" => [
                     "header" => "The requested resources was not found!",
                     "info" => "There appears to be a problem finding the requested resource."
-                ]],
-            ]);
+                ]]
+            ];
         }
 
         $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
