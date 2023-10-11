@@ -29,8 +29,13 @@
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-end gap-4">
-                <secondary-button @click="hideDetails">Sluiten</secondary-button>
-                <secondary-button @click="decryptData">Decrypt</secondary-button>
+                <secondary-button @click="hideDetails">
+                    <span class="text-base fa fa-solid fa-xmark"></span>
+                    &nbsp;&nbsp;Sluiten</secondary-button>
+                <secondary-button @click="decryptData">
+                    <span v-if="isLoading" class="text-sm fa fa-solid fa-spinner fa-spin"></span>
+                    <span v-if="!isLoading" class="text-sm fa fa-solid fa-key"></span>
+                    &nbsp;&nbsp;Decrypt</secondary-button>
                 <danger-button>Verwijderen</danger-button>
             </div>
         </modal>
@@ -66,6 +71,7 @@ export default {
                 filter: null,
                 param: null,
             },
+            isLoading: false
         }
     },
     computed: {
@@ -124,6 +130,7 @@ export default {
             }
         },
         decryptData() {
+            this.isLoading = true;
             axios.get(`/event/logs/${this.selectedId}/`)
                 .then(response => {
                     this.decrypted.original_data = response.data.original_data;
@@ -132,8 +139,8 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 })
-                .finally(function () {
-
+                .finally(() => {
+                    this.isLoading = false;
                 });
         },
         submit() {

@@ -67,7 +67,7 @@ class LogController extends Controller
             ->paginate(15);
 
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
-        if (!$enc_key) {
+        if (!$enc_key || $enc_key == "") {
             return Inertia::render('Error', [
                 'error' => ["status" => "400 Bad Request", "message" => [
                     "header" => "You do not have an encryption key!",
@@ -90,7 +90,7 @@ class LogController extends Controller
     {
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
-        if (!$enc_key) {
+        if (!$enc_key || $enc_key == "") {
             return Inertia::render('Error', [
                 'error' => ["status" => "400 Bad Request", "message" => [
                     "header" => "You do not have an encryption key!",
