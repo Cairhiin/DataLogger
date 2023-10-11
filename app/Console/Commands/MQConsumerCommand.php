@@ -12,14 +12,14 @@ class MQConsumerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:m-q-consumer-command';
+    protected $signature = 'mq:consume';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Consume the RabbitMQ queue';
 
     /**
      * Execute the console command.

@@ -87,31 +87,15 @@ class LogController extends Controller
 
     public function testRabbitMQ(Request $request)
     {
-        /* $connection = new AMQPStreamConnection(
-            env('MQ_HOST'),
-            env('MQ_PORT'),
-            env('MQ_USER'),
-            env('MQ_PASS'),
-            env('MQ_VHOST')
-        );
-        $channel = $connection->channel();
-
-        $channel->queue_declare('msgs', true, false, false, false); */
-
         $data = [
-            'ip' => '127.0.0.1',
+            'ip_address' => '127.0.0.1',
             'route' => 'profile.update',
             'new_data' => 'Kirkkokatu',
             'original_data' => 'Kymenlaaksonkatu',
-            'user_id' => 'worthitIT001',
+            'user_email' => 'info@worthIT-it.com',
             'event_type' => 'update',
             'model' => 'Address'
         ];
-        /*
-        $msg = new AMQPMessage(serialize($data));
-        $channel->basic_publish($msg, '', 'msgs');
-
-        return "[x] Message sent!"; */
 
         $mqService = new \App\Services\RabbitMQService();
         $mqService->publish(serialize($data));
