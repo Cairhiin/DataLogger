@@ -65,7 +65,16 @@ class LogController extends Controller
             })
             ->orderBy('created_at', 'DESC')
             ->paginate(15);
+
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
+        if (!$enc_key) {
+            return Inertia::render('Error', [
+                'error' => ["status" => "400 Bad Request", "message" => [
+                    "header" => "You do not have an encryption key!",
+                    "info" => "Please contact an administrator for more information."
+                ]],
+            ]);
+        }
 
         foreach ($logs as $log) {
             $log->user_email = Encryption::decryptUsingKey($enc_key, $log->user_email);
@@ -81,8 +90,13 @@ class LogController extends Controller
     {
         $enc_key = User::findOrFail(Auth()->id())->encryption_key;
 
-        if ($enc_key == '') {
-            return ["Status" => "Error", "Message" => "No encryption key set!"];
+        if (!$enc_key) {
+            return Inertia::render('Error', [
+                'error' => ["status" => "400 Bad Request", "message" => [
+                    "header" => "You do not have an encryption key!",
+                    "info" => "Please contact an administrator for more information."
+                ]],
+            ]);
         }
 
         $log = LogEntry::findOrFail($request->id);

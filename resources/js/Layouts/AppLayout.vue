@@ -25,7 +25,7 @@ const logout = () => {
 
         <Banner />
 
-        <div class="min-h-screen bg-white dark:bg-zinc-900">
+        <div class="min-h-screen bg-white dark:bg-zinc-900 grid">
             <nav class="bg-white dark:bg-zinc-900">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -174,14 +174,14 @@ const logout = () => {
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <header v-if="$slots.header" class="bg-transparent">
+                <div class="py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto py-6 lg:px-8">
+            <main class="py-6 lg:px-8">
                 <slot />
             </main>
         </div>
