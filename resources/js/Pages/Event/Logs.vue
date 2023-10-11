@@ -6,7 +6,7 @@
                 <div class="col-span-2">Datum</div>
                 <div>Data</div>
                 <div>Route</div>
-                <div>Event</div>
+                <div>Applicatie</div>
             </div>
             <event-list :events="logs.data" @show-details="showDetails" />
         </div>
@@ -19,7 +19,7 @@
                         <option disabled value="">Kies een filter optie</option>
                         <option value="model">Data</option>
                         <option value="route">Route</option>
-                        <option value="event">Event</option>
+                        <option value="event">Applicatie</option>
                     </select>
                     <input id="param" v-model="form.param" />
                 </div>

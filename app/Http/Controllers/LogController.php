@@ -29,7 +29,7 @@ class LogController extends Controller
         $validated = $request->validate([
             'original_data' => 'required',
             'new_data' => 'required',
-            'user_email' => 'required|email',
+            'app_id' => 'required',
             'model' => 'required',
             'route' => 'required',
             'event_type' => 'required',
@@ -40,7 +40,7 @@ class LogController extends Controller
             'model' => $request->model,
             'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
             'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
-            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
+            'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
             'event_type' => $request->event_type,
             'route' => $request->route,
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
@@ -63,6 +63,9 @@ class LogController extends Controller
             ->when($request->event, function ($query) use ($request) {
                 return $query->where('event_type', '=', $request->event);
             })
+            ->when($request->event, function ($query) use ($request) {
+                return $query->where('app_id', '=', $request->app_id);
+            })
             ->orderBy('created_at', 'DESC')
             ->paginate(15);
 
@@ -77,7 +80,7 @@ class LogController extends Controller
         }
 
         foreach ($logs as $log) {
-            $log->user_email = Encryption::decryptUsingKey($enc_key, $log->user_email);
+            $log->app_id = Encryption::decryptUsingKey($enc_key, $log->app_id);
             $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
         }
 

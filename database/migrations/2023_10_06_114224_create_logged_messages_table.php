@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('model');
             $table->text('original_data')->nullable();
             $table->text('new_data')->nullable();
-            $table->text('user_email');
+            $table->text('app_id');
             $table->string('route');
             $table->string('ip_address');
             $table->timestamps();

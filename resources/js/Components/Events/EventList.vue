@@ -11,7 +11,7 @@
             {{ log.route }}
         </div>
         <div>
-            {{ log.event_type }}
+            {{ log.app_id }}
         </div>
     </div>
 </template>
