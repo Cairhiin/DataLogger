@@ -14,7 +14,8 @@ class LogController extends Controller
 {
     public function store(Request $request)
     {
-        $user = User::where('email', $request->userEmail)->get();
+        echo "email: " . $request->user_email;
+        $user = User::where('email', $request->user_email)->get();
         $enc_key = '';
 
         if (!$user->isEmpty()) {
@@ -27,21 +28,33 @@ class LogController extends Controller
             return ["Status" => "Error", "Message" => "No encryption key set!"];
         }
 
+
+        $validated = $request->validate([
+            'original_data' => 'required',
+            'new_data' => 'required',
+            'user_email' => 'required|email',
+            'model' => 'required',
+            'route' => 'required',
+            'event_type' => 'required',
+            'ip' => 'required'
+        ]);
+
         if ($request->user()->tokenCan('log:create')) {
-            LogEntry::create([
+            $log = [
                 'model' => $request->model,
-                'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->originalData)),
-                'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->newData)),
-                'user_email' => Encryption::encryptUsingKey($enc_key, $request->userEmail),
-                'event_type' => $request->eventType,
+                'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
+                'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
+                'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
+                'event_type' => $request->event_type,
                 'route' => $request->route,
                 'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
-            ]);
+            ];
 
-            return ["Status" => "Success", "Message" => "Entered new log event!"];
+            $mqService = new \App\Services\RabbitMQService();
+            $mqService->publish(serialize($log));
+        } else {
+            return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
         }
-
-        return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
     }
 
     public function index(Request $request)
@@ -96,8 +109,5 @@ class LogController extends Controller
             'event_type' => 'update',
             'model' => 'Address'
         ];
-
-        $mqService = new \App\Services\RabbitMQService();
-        $mqService->publish(serialize($data));
     }
 }

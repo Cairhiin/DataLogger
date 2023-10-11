@@ -30,16 +30,6 @@ class RabbitMQService
 
         $callback = function ($msg) {
             $data = unserialize($msg->body);
-            $validator = Validator::make($data, [
-                'original_data' => 'required',
-                'new_data' => 'required',
-                'user_email' => 'required|email',
-                'model' => 'required',
-                'route' => 'required',
-                'event_type' => 'required',
-                'ip_address' => 'required'
-            ])->validateWithBag('datalogger');
-
             LogEntry::create($data);
         };
 
