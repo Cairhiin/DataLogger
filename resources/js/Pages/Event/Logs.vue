@@ -28,22 +28,8 @@
         </div>
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <div class="border-t border-zinc-300 dark:border-zinc-700 p-4 flex justify-between items-center">
-                <div class="text-red-600 font-bold text-sm uppercase"><span
-                        :class="{ 'fa fa-solid fa-warning': error }"></span>&nbsp;&nbsp;{{
-                            error }}
-                </div>
-                <div class="flex justify-end  gap-6">
-                    <secondary-button @click="hideDetails">
-                        <span class="text-base fa fa-solid fa-xmark"></span>
-                        &nbsp;&nbsp;Close</secondary-button>
-                    <secondary-button @click="decryptData">
-                        <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
-                        <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
-                        &nbsp;&nbsp;Decrypt</secondary-button>
-                    <danger-button @click="deleteLog">Delete</danger-button>
-                </div>
-            </div>
+            <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
+                @hide-details="hideDetails" @delete-log="deleteLog" />
         </modal>
     </app-layout>
 </template>
@@ -58,6 +44,7 @@ import Modal from '@/Components/Modal.vue';
 import EventDetails from '@/Components/Events/EventDetails.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import EventModalContent from '@/Components/Events/EventModalContent.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 export default {
@@ -108,6 +95,7 @@ export default {
         SecondaryButton,
         DangerButton,
         EventDetails,
+        EventModalContent,
         AppLayout,
     },
     methods: {
