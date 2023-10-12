@@ -11,22 +11,7 @@
             <event-list :events="logsList.data" @show-details="showDetails" />
         </div>
         <pagination :links="logsList.links" />
-        <div>
-            <event-filter-form :events="logsList.data" />
-            <!-- <form @submit.prevent="submit">
-                <div>
-                    <label for="filter">Filter:</label>
-                    <select id="filter" v-model="form.filter">
-                        <option disabled value="">Choose a filter option</option>
-                        <option value="model">Data</option>
-                        <option value="route">Route</option>
-                        <option value="event">Application ID</option>
-                    </select>
-                    <input id="param" v-model="form.param" />
-                </div>
-                <primary-button type="submit">Filter</primary-button>
-            </form> -->
-        </div>
+        <event-filter-form :events="logsList.data" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
