@@ -1,6 +1,6 @@
 # DataLogger
 
-Welcome to the DataLogger! An application to log database and url activity
+Welcome to DataLogger! An application to log database and url activity.
 
 ## Prerequisites
 
@@ -26,7 +26,11 @@ composer install
 
 ```
 npm install
-Create a Copy of the .env File:
+```
+
+### Create a Copy of the .env File:
+
+```
 cp .env.example .env
 ```
 
