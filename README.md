@@ -34,11 +34,13 @@ npm install
 cp .env.example .env
 ```
 
-### Generate an Application Key:
+### Generate an Application Key and a Encryption Key:
 
 ```
 php artisan key:generate
 ```
+
+Add an encryption key to the .env file.
 
 ### Set Up the Database:
 
@@ -63,3 +65,5 @@ npm run dev (Vue/Inertia)
 php artisan mq:consume
 
 The DataLogger application will be available at http://localhost:8000.
+
+### Get an API key and add it to your .env as VITE_API_KEY
