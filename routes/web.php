@@ -3,7 +3,10 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\AppController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\ModelController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\MessageController;
 
 /*
@@ -40,6 +43,12 @@ Route::middleware([
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     Route::get('messages', [MessageController::class, 'index'])->name('event.messages.index');
     Route::get('logs', [LogController::class, 'index'])->name('event.logs.index');
+
+    // Routes to get a list of unique route, model and app names
+    Route::get('logs/routes', [RouteController::class, 'index'])->name('event.logs.routes.index');
+    Route::get('logs/apps', [AppController::class, 'index'])->name('event.logs.apps.index');
+    Route::get('logs/models', [ModelController::class, 'index'])->name('event.logs.models.index');
+
     Route::get('logs/{id}', [LogController::class, 'show'])->name('event.logs.show');
     Route::delete('logs/{id}', [LogController::class, 'destroy'])->name('event.logs.destroy');
 });

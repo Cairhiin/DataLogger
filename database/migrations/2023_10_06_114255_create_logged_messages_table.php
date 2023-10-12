@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('new_data')->nullable();
             $table->text('app_id');
             $table->string('route');
+            $table->string('user_email');
             $table->string('ip_address');
             $table->timestamps();
         });

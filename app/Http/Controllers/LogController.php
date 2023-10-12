@@ -34,6 +34,7 @@ class LogController extends Controller
             'model' => 'required',
             'route' => 'required',
             'event_type' => 'required',
+            'user_email' => 'required',
             'ip' => 'required'
         ]);
 
@@ -44,6 +45,7 @@ class LogController extends Controller
             'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
             'event_type' => $request->event_type,
             'route' => $request->route,
+            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
         ];
 
@@ -54,7 +56,12 @@ class LogController extends Controller
 
     public function index(Request $request)
     {
+        $user = Auth()->user();
         $logs = LogEntry::query()
+            ->when($user->role->name == "Member", function ($query) use ($user) {
+                // If the user is just a member only show results that are theirs
+                return $query->where('user_email', Encryption::encryptUsingKey($user->encryption_key, $user->email));
+            })
             ->when($request->model, function ($query) use ($request) {
                 return $query->where('model', '=', $request->model);
             })
@@ -64,8 +71,8 @@ class LogController extends Controller
             ->when($request->event, function ($query) use ($request) {
                 return $query->where('event_type', '=', $request->event);
             })
-            ->when($request->event, function ($query) use ($request) {
-                return $query->where('app_id', '=', $request->app_id);
+            ->when($request->app, function ($query) use ($request, $user) {
+                return $query->where('app_id', '=', Encryption::encryptUsingKey($user->encryption_key, $request->app));
             })
             ->orderBy('created_at', 'DESC')
             ->paginate(15);

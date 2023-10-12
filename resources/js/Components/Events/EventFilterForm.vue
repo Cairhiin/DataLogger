@@ -1,6 +1,6 @@
 <template>
     <section class="py-8">
-        <form @submit.prevent="submit" class="dark:bg-zinc-800/25 p-4 rounded">
+        <form class="dark:bg-zinc-800/25 p-4 rounded" @submit.prevent="submit">
             <label class="dark:text-zinc-100 uppercase font-bold text-sm" for="filter">Choose a filter</label>
             <div class="flex gap-4 mt-2 mb-4 ">
                 <select id="filter" v-model="form.filter"
@@ -10,15 +10,15 @@
                     <option value="route">Route</option>
                     <option value="app">Application ID</option>
                 </select>
-                <select id="param" v-model="form.param"
+                <select id="param" v-model="form.param" :disabled="!filterType.length"
                     class="rounded dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 p-2">
                     <option disabled value="">Choose a filter value</option>
                     <option v-for="route in filterType" :value="route">{{ route }}</option>
                 </select>
             </div>
             <div class="flex gap-8">
-                <primary-button type="submit">Filter</primary-button>
-                <secondary-button>Reset</secondary-button>
+                <primary-button>Filter</primary-button>
+                <secondary-button @click="$emit('onReset')" type="button">Reset</secondary-button>
             </div>
         </form>
     </section>
@@ -42,8 +42,7 @@ export default {
         }
     },
     mounted() {
-        axios.get(`/api/event/logs/routes/`,
-            { headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` } })
+        axios.get(`/event/logs/routes/`)
             .then(response => {
                 if (response.data.error) {
                     this.error = response.data.error.status;
@@ -51,8 +50,7 @@ export default {
                     this.routes = response.data;
                 }
             });
-        axios.get(`/api/event/logs/apps/`,
-            { headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` } })
+        axios.get(`/event/logs/apps/`)
             .then(response => {
                 if (response.data.error) {
                     this.error = response.data.error.status;
@@ -60,8 +58,7 @@ export default {
                     this.apps = response.data;
                 }
             });
-        axios.get(`/api/event/logs/models/`,
-            { headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` } })
+        axios.get(`/event/logs/models/`)
             .then(response => {
                 if (response.data.error) {
                     this.error = response.data.error.status;
@@ -94,7 +91,9 @@ export default {
     },
     methods: {
         submit() {
-            this.$emit('submit')
+            if (this.form.filter && this.form.param) {
+                this.$emit('onSubmit', this.form.filter, this.form.param);
+            }
         }
     },
     props: {

@@ -11,7 +11,7 @@
             <event-list :events="logsList.data" @show-details="showDetails" />
         </div>
         <pagination :links="logsList.links" />
-        <event-filter-form :events="logsList.data" />
+        <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
@@ -148,8 +148,11 @@ export default {
                     this.error = error;
                 });
         },
-        submit() {
-            router.get('/event/logs', { [this.form.filter]: this.form.param });
+        onSubmit(filter, param) {
+            router.get('/event/logs', { [filter]: param });
+        },
+        onReset() {
+            router.get('/event/logs');
         }
     }
 }
