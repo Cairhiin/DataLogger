@@ -47,29 +47,10 @@ export default {
             },
             selectedId: 0,
             modalIsShowing: false,
-            form: {
-                filter: null,
-                param: null,
-            },
             isLoading: false,
             error: null,
             logsList: this.logs
         }
-    },
-    computed: {
-        modalContent() {
-            const log = this.getSelectedLog();
-
-            if (this.decrypted.original_data) {
-                log.original_data = this.decrypted.original_data;
-            }
-
-            if (this.decrypted.new_data) {
-                log.new_data = this.decrypted.new_data;
-            }
-
-            return log;
-        },
     },
     props: {
         logs: Object
@@ -85,6 +66,21 @@ export default {
         EventModalContent,
         EventFilterForm,
         AppLayout,
+    },
+    computed: {
+        modalContent() {
+            const log = this.getSelectedLog();
+
+            if (this.decrypted.original_data) {
+                log.original_data = this.decrypted.original_data;
+            }
+
+            if (this.decrypted.new_data) {
+                log.new_data = this.decrypted.new_data;
+            }
+
+            return log;
+        },
     },
     methods: {
         getSelectedLog() {
