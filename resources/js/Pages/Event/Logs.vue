@@ -12,7 +12,8 @@
         </div>
         <pagination :links="logsList.links" />
         <div>
-            <form @submit.prevent="submit">
+            <event-filter-form :events="logsList.data" />
+            <!-- <form @submit.prevent="submit">
                 <div>
                     <label for="filter">Filter:</label>
                     <select id="filter" v-model="form.filter">
@@ -24,7 +25,7 @@
                     <input id="param" v-model="form.param" />
                 </div>
                 <primary-button type="submit">Filter</primary-button>
-            </form>
+            </form> -->
         </div>
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
@@ -45,6 +46,7 @@ import EventDetails from '@/Components/Events/EventDetails.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import EventModalContent from '@/Components/Events/EventModalContent.vue';
+import EventFilterForm from '@/Components/Events/EventFilterForm.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 export default {
@@ -96,6 +98,7 @@ export default {
         DangerButton,
         EventDetails,
         EventModalContent,
+        EventFilterForm,
         AppLayout,
     },
     methods: {
