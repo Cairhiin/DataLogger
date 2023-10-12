@@ -8,9 +8,9 @@
                 <div>Route</div>
                 <div>Application ID</div>
             </div>
-            <event-list :events="logs.data" @show-details="showDetails" />
+            <event-list :events="logsList.data" @show-details="showDetails" />
         </div>
-        <pagination :links="logs.links" />
+        <pagination :links="logsList.links" />
         <div>
             <form @submit.prevent="submit">
                 <div>
@@ -41,7 +41,7 @@
                         <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
                         <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
                         &nbsp;&nbsp;Decrypt</secondary-button>
-                    <danger-button>Delete</danger-button>
+                    <danger-button @click="deleteLog">Delete</danger-button>
                 </div>
             </div>
         </modal>
@@ -78,12 +78,13 @@ export default {
                 param: null,
             },
             isLoading: false,
-            error: null
+            error: null,
+            logsList: this.logs
         }
     },
     computed: {
         modalContent() {
-            const log = this.logs.data.filter(log => log.id === this.selectedId)[0];
+            const log = this.getSelectedLog();
 
             if (this.decrypted.original_data) {
                 log.original_data = this.decrypted.original_data;
@@ -94,7 +95,7 @@ export default {
             }
 
             return log;
-        }
+        },
     },
     props: {
         logs: Object
@@ -111,7 +112,7 @@ export default {
     },
     methods: {
         getSelectedLog() {
-            return this.logs.data.filter(log => log.id === this.selectedId)[0];
+            return this.logsList.data.filter(log => log.id === this.selectedId)[0];
         },
         showDetails(id) {
             this.selectedId = id;
@@ -148,11 +149,31 @@ export default {
                         this.decrypted.new_data = response.data.new_data;
                     }
                 })
-                .catch(function (error) {
-                    console.log(error);
+                .catch(error => {
+                    this.error = error;
                 })
-                .finally((res) => {
+                .finally(() => {
                     this.isLoading = false;
+                });
+        },
+        deleteLog(id) {
+            if (!confirm("Are you certain you want to delete this log event? It cannot be undone!")) {
+                return false;
+            }
+
+            axios.delete(`/event/logs/${this.selectedId}/`)
+                .then(response => {
+                    if (response.data.error) {
+                        this.error = response.data.error.status;
+                    } else {
+                        this.modalIsShowing = false;
+                        this.logsList.data = this.logsList.data.filter(log =>
+                            log.id !== this.selectedId
+                        );
+                    }
+                })
+                .catch(error => {
+                    this.error = error;
                 });
         },
         submit() {

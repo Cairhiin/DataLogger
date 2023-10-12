@@ -41,4 +41,5 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     Route::get('messages', [MessageController::class, 'index'])->name('event.messages.index');
     Route::get('logs', [LogController::class, 'index'])->name('event.logs.index');
     Route::get('logs/{id}', [LogController::class, 'show'])->name('event.logs.show');
+    Route::delete('logs/{id}', [LogController::class, 'destroy'])->name('event.logs.destroy');
 });

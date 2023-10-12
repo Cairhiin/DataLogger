@@ -138,4 +138,30 @@ class LogController extends Controller
 
         return $log;
     }
+
+    public function destroy(Request $request)
+    {
+        if ($request->user()->tokenCan('log:delete')) {
+            try {
+                $log = LogEntry::findOrFail($request->id);
+                $log->forceDelete();
+            } catch (ModelNotFoundException $e) {
+                return  [
+                    'error' => ["status" => "404 Not Found", "message" => [
+                        "header" => "The requested resources was not found!",
+                        "info" => "There appears to be a problem finding the requested resource."
+                    ]]
+                ];
+            }
+        } else {
+            return  [
+                'error' => ["status" => "401 Unauthorized", "message" => [
+                    "header" => "You do not have permission to delete log entries!",
+                    "info" => "Please contact an administrator for more information."
+                ]]
+            ];
+        }
+
+        return $request->id;
+    }
 }
