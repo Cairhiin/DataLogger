@@ -40,7 +40,14 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Add an encryption key to the .env file.
+Add an encryption key to the .env file and make certain to never change
+this key or your encrypted data in the database is lost!.
+
+Example key:
+
+```
+ENC_KEY="ksdjsk2344wcjlwfhwfjhf34755wfwvt3g593n37nyc.lp02hou!234id#!aqp"
+```
 
 ### Set Up the Database:
 
@@ -62,6 +69,38 @@ npm run dev (Vue/Inertia)
 
 ### Start the RabbitMQ Service:
 
+This application requires a properly configured RabbitMQ environment!
+
+```
 php artisan mq:consume
+```
 
 The DataLogger application will be available at http://localhost:8000.
+
+### Send API requests from the application you want to log:
+
+```
+axios.post('<YOUR_APP_URL>/api/events/log', {
+        'changed_data' => <CHANGED_DATA>,
+        'original_data' => <ORIGINAL_DATA>,
+        'user_email' => <USER_EMAIL>,
+        'event_type' => <TYPE_OF_THE_EVENT>,
+        'model' => <MODEL_OF_DATA_CHANGED>,
+        'app_id' => <YOUR_APP_NAME>,
+        'route' => <ROUTE>,
+        'ip_address' => <IP_ADDRESS>
+    }, {
+        'headers' =>
+        {
+            'Authorization' => "Bearer {YOUR_TOKEN}",
+            'Accept' => 'application/json'
+        }
+    })
+    .then(function(res) => {
+        // Do something with the response
+    })
+    .catch(function(err) => {
+        // Do something with the error
+    })
+
+```
