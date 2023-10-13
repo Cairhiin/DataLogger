@@ -9,8 +9,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-sky-400 text-base font-heading leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out dark:text-zinc-300'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-base font-heading leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out dark:text-zinc-100 dark:hover:text-zinc-400 dark:hover:border-sky-400';
+        ? 'inline-flex items-center px-2 py-3 text-base font-heading leading-5 font-bold text-zinc-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out dark:text-zinc-300'
+        : 'inline-flex items-center px-2 py-3 text-base font-heading leading-5 text-zinc-700 hover:text-sky-700 hover:border-sky-500 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out dark:text-zinc-100 dark:hover:text-zinc-400 dark:hover:border-sky-400';
 });
 </script>
 

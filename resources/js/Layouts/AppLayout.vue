@@ -46,10 +46,10 @@ onMounted(() => {
 
         <Banner />
 
-        <div class="min-h-screen bg-white dark:bg-zinc-900">
-            <nav class="bg-white dark:bg-zinc-900">
+        <div class="min-h-screen bg-white dark:bg-gradient-to-b dark:from-zinc-950 dark:to-zinc-900">
+            <nav class="bg-white dark:bg-transparent">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -59,13 +59,6 @@ onMounted(() => {
                                         class="text-slate-500">Logger</span>
                                 </h1>
                                 </Link>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
                             </div>
                         </div>
 
@@ -197,14 +190,35 @@ onMounted(() => {
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-transparent">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto py-6 px-6  dark:text-zinc-200 text-zinc-800 font-heading
+                text-2xl">
                     <slot name="header" />
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto py-6 lg:px-8">
-                <slot />
+            <main class="max-w-7xl mx-auto py-6 lg:px-8 lg:flex lg:max-w-full">
+                <!-- Sidebar -->
+                <nav class="w-40"><!-- Navigation Links -->
+                    <div class="hidden sm:-my-px sm:flex sm:flex-col">
+                        <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                            <span class="fa fa-solid fa-gauge mr-3 opacity-50 transition-all duration-500 w-4"></span>
+                            Dashboard
+                        </NavLink>
+                        <NavLink :href="route('event.logs.index')" :active="route().current('event.logs.index')">
+                            <span class="fa fa-solid fa-database mr-3 opacity-50 transition-all duration-500 w-4"></span>
+                            Database Events
+                        </NavLink>
+                        <NavLink :href="route('event.messages.index')" :active="route().current('event.messages.index')">
+                            <span class="fa fa-solid fa-link mr-3 opacity-50 transition-all duration-500 w-4"></span> Url
+                            Events
+                        </NavLink>
+                    </div>
+                </nav>
+                <div class="flex-1 px-8">
+                    <slot />
+                </div>
+
             </main>
         </div>
     </div>
