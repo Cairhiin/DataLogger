@@ -21,17 +21,17 @@ const logout = () => {
 };
 
 const changeMode = () => {
-    console.log(showingDarkMode)
     showingDarkMode.value = !showingDarkMode.value;
-    localStorage.setItem('color-theme', showingDarkMode);
+    localStorage.setItem('color-theme', showingDarkMode.value);
 }
 
 onMounted(() => {
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (localStorage.getItem('color-theme') === 'true' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         showingDarkMode.value = true;
     } else {
         showingDarkMode.value = false;
     }
+
 });
 </script>
 
