@@ -75,9 +75,10 @@ This application requires a properly configured RabbitMQ environment!
 php artisan mq:consume
 ```
 
-The DataLogger application will be available at http://localhost:8000.
-
 ### Send API requests from the application you want to log:
+
+Make certain your axios request is correct and has all the fields as displayed
+in the example below. ALL FIELDS ARE REQUIRED!
 
 ```
 axios.post('<YOUR_APP_URL>/api/events/log', {
@@ -104,3 +105,5 @@ axios.post('<YOUR_APP_URL>/api/events/log', {
     })
 
 ```
+
+The DataLogger application will be available at http://localhost:8000.
