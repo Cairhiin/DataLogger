@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, onMounted, onUnmounted, watch, ref } from 'vue';
 
 const props = defineProps({
     show: {
@@ -17,6 +17,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const mode = ref(false);
 
 watch(() => props.show, () => {
     if (props.show) {
@@ -38,7 +39,12 @@ const closeOnEscape = (e) => {
     }
 };
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
+onMounted(() => {
+    document.addEventListener('keydown', closeOnEscape);
+    window.addEventListener('mode-changed', (event) => {
+        mode.value = event.detail.storage;
+    });
+});
 
 onUnmounted(() => {
     document.removeEventListener('keydown', closeOnEscape);
@@ -59,7 +65,8 @@ const maxWidthClass = computed(() => {
 <template>
     <teleport to="body">
         <transition leave-active-class="duration-200">
-            <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
+            <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region
+                :class="{ 'dark': mode }">
                 <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100"
                     leave-to-class="opacity-0">

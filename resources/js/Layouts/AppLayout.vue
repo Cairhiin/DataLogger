@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -23,6 +22,12 @@ const logout = () => {
 const changeMode = () => {
     showingDarkMode.value = !showingDarkMode.value;
     localStorage.setItem('color-theme', showingDarkMode.value);
+
+    window.dispatchEvent(new CustomEvent('mode-changed', {
+        detail: {
+            storage: showingDarkMode.value
+        }
+    }));
 }
 
 onMounted(() => {
@@ -31,12 +36,11 @@ onMounted(() => {
     } else {
         showingDarkMode.value = false;
     }
-
 });
 </script>
 
 <template>
-    <div :class="{ 'dark': showingDarkMode }">
+    <div :class="{ 'dark': showingDarkMode }" id="anchor">
 
         <Head :title="title" />
 
