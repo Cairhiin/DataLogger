@@ -1,6 +1,6 @@
 <template>
     <section class="py-8">
-        <form class="dark:bg-zinc-800/25 p-4 rounded" @submit.prevent="submit">
+        <form class="dark:bg-zinc-800/25 bg-zinc-200 p-4 rounded" @submit.prevent="submit">
             <label class="dark:text-zinc-100 uppercase font-bold text-sm" for="filter">Choose a filter</label>
             <div class="flex gap-4 mt-2 mb-4 ">
                 <select id="filter" v-model="form.filter"
@@ -10,8 +10,8 @@
                     <option value="route">Route</option>
                     <option value="app">Application ID</option>
                 </select>
-                <select id="param" v-model="form.param" :disabled="!filterType.length"
-                    class="rounded dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 p-2">
+                <select id="param" v-model="form.param" :disabled="!filterType.length" class="rounded
+                    dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 p-2">
                     <option disabled value="">Choose a filter value</option>
                     <option v-for="route in filterType" :value="route">{{ route }}</option>
                 </select>
