@@ -17,7 +17,7 @@
                 </select>
             </div>
             <div class="flex gap-8">
-                <primary-button>Filter</primary-button>
+                <primary-button :disabled="!form.filter || !form.param">Filter</primary-button>
                 <secondary-button @click="$emit('onReset')" type="button">Reset</secondary-button>
             </div>
         </form>
