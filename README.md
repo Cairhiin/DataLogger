@@ -84,7 +84,8 @@ Make certain your axios request is correct and has all the fields as displayed
 in the example below. You can place this axios call in the methods of a Model Observer to fire
 everytime a model's data is modified, created or deleted.
 
-ALL FIELDS ARE REQUIRED!
+ALL FIELDS ARE REQUIRED! If either the new_data or original_data field is empty in case for
+example a create or delete event pass null instead.
 
 ```
 axios.post('<YOUR_APP_URL>/api/events/log', {
