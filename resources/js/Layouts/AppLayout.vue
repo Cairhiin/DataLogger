@@ -1,25 +1,42 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { onMounted } from 'vue'
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import DarkModeSwitch from '@/Components/Custom/DarkModeSwitch.vue';
 
 defineProps({
     title: String,
 });
 
 const showingNavigationDropdown = ref(false);
+const showingDarkMode = ref(false);
 
 const logout = () => {
     router.post(route('logout'));
 };
+
+const changeMode = () => {
+    console.log(showingDarkMode)
+    showingDarkMode.value = !showingDarkMode.value;
+    localStorage.setItem('color-theme', showingDarkMode);
+}
+
+onMounted(() => {
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        showingDarkMode.value = true;
+    } else {
+        showingDarkMode.value = false;
+    }
+});
 </script>
 
 <template>
-    <div>
+    <div :class="{ 'dark': showingDarkMode }">
 
         <Head :title="title" />
 
@@ -48,7 +65,7 @@ const logout = () => {
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4">
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
@@ -103,6 +120,7 @@ const logout = () => {
                                     </template>
                                 </Dropdown>
                             </div>
+                            <DarkModeSwitch @change-mode="changeMode" :showingDarkMode="showingDarkMode" />
                         </div>
 
                         <!-- Hamburger -->
