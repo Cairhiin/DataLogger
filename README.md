@@ -30,6 +30,9 @@ npm install
 
 ### Create a Copy of the .env File:
 
+Fill in all the necessary fields in the .env file and pay special attention
+to the MQ_XXXXXX fields as these are required by RabbitMQ!
+
 ```
 cp .env.example .env
 ```
