@@ -78,11 +78,14 @@ php artisan mq:consume
 ### Send API requests from the application you want to log:
 
 Make certain your axios request is correct and has all the fields as displayed
-in the example below. ALL FIELDS ARE REQUIRED!
+in the example below. You can place this axios call in the methods of a Model Observer to fire
+everytime a model's data is modified, created or deleted.
+
+ALL FIELDS ARE REQUIRED!
 
 ```
 axios.post('<YOUR_APP_URL>/api/events/log', {
-        'changed_data' => <CHANGED_DATA>,
+        'new_data' => <CHANGED_DATA>,
         'original_data' => <ORIGINAL_DATA>,
         'user_email' => <USER_EMAIL>,
         'event_type' => <TYPE_OF_THE_EVENT>,
