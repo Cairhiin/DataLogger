@@ -12,12 +12,12 @@ class RabbitMQService
     {
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
         $channel = $connection->channel();
-        $channel->exchange_declare('test_exchange', 'direct', false, false, false);
-        $channel->queue_declare('test_queue', false, false, false, false);
-        $channel->queue_bind('test_queue', 'test_exchange', 'test_key');
+        $channel->exchange_declare(env('MQ_EXCHANGE'), 'direct', false, false, false);
+        $channel->queue_declare(env('MQ_QUEUE'), false, false, false, false);
+        $channel->queue_bind(env('MQ_QUEUE'), env('MQ_EXCHANGE'), 'test_key');
         $msg = new AMQPMessage($message);
-        $channel->basic_publish($msg, 'test_exchange', 'test_key');
-        echo " [x] Sent $message to test_exchange / test_queue.\n";
+        $channel->basic_publish($msg, env('MQ_EXCHANGE'), 'test_key');
+        echo " [x] Sent $message\n";
         $channel->close();
         $connection->close();
     }
@@ -31,8 +31,8 @@ class RabbitMQService
             LogEntry::create($data);
         };
 
-        $channel->queue_declare('test_queue', false, false, false, false);
-        $channel->basic_consume('test_queue', '', false, true, false, false, $callback);
+        $channel->queue_declare(env('MQ_QUEUE'), false, false, false, false);
+        $channel->basic_consume(env('MQ_QUEUE'), '', false, true, false, false, $callback);
         echo 'Waiting for new message on test_queue', " \n";
         while ($channel->is_consuming()) {
             $channel->wait();
