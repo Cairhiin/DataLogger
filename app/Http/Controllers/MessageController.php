@@ -53,7 +53,7 @@ class MessageController extends Controller
         $user = Auth()->user();
         $enc_key = $user->encryption_key;
         $hasAccess = $user->role->name == "Super Admin" ? true : false;
-        $page = ($request->page == 0 || $request->page) == "undefined" ? 1 : $request->page;
+        $page = ($request->page == 0 || $request->page == "undefined") ? 1 : $request->page;
         $lineStart = ($page - 1) * self::PAGINATE;
 
         $logFile = file(storage_path() . '/logs/user-data.log');
