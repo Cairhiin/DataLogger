@@ -32,6 +32,13 @@ class ReadLogsFromFile
         $links[] = array("url" => $prev, "label" => "previous");
         $links[] = array("url" => "/event/messages?page=" . 1, "label" => 1);
 
+        // Reverse the logfile to get newest data first
+        $data = [];
+        foreach ($logFile as $line) {
+            $data[] = $line;
+        }
+        $logFile = array_reverse($data);
+
         foreach ($logFile as $line_num => $line) {
             if (($line_num + 1) % 15 == 0) {
                 $numberOfLinks++;
@@ -75,6 +82,7 @@ class ReadLogsFromFile
         $next = $page  * 15 >= $numberOfResults ? null : '/event/messages?page=' . $page + 1;
         $links[] = array("url" => $next, "label" => "next");
 
+        // Reverse the array to get newest messages first
         return ["links" => $links, "messages" => $messageCollection];
     }
 }
