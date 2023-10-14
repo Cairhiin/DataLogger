@@ -46,7 +46,7 @@ onMounted(() => {
 
         <Banner />
 
-        <div class="min-h-screen bg-white dark:bg-gradient-to-b dark:from-zinc-950 dark:to-zinc-900">
+        <div class="min-h-screen bg-white bg-gradient-to-b from-white to-zinc-100 dark:from-zinc-950 dark:to-zinc-900">
             <nav class="bg-white dark:bg-transparent">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-6 lg:px-8">
@@ -77,7 +77,7 @@ onMounted(() => {
                                         <span v-else class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md
                                                 text-gray-500 bg-white  hover:text-gray-700 focus:outline-none
-                                                dark:text-zinc-100 dark:bg-zinc-900 dark:hover:text-slate-400 dark:focus:bg-zinc-900 dark:active:bg-zinc-900
+                                                dark:text-zinc-100 dark:bg-transparent dark:hover:text-slate-400 dark:focus:bg-zinc-900 dark:active:bg-zinc-900
                                                 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
 

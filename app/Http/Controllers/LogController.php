@@ -34,7 +34,7 @@ class LogController extends Controller
             'model' => 'required',
             'route' => 'required',
             'event_type' => 'required',
-            'user_email' => 'required',
+            'user_email' => 'required|email',
             'ip' => 'required'
         ]);
 
@@ -51,14 +51,14 @@ class LogController extends Controller
 
         // Serialize the log data and publish it on the RabbitMQ stream
         $mqService = new \App\Services\RabbitMQService();
-        $mqService->publish(serialize($log));
+        $mqService->publish(serialize($log), 'log');
     }
 
     public function index(Request $request)
     {
         $user = Auth()->user();
         $logs = LogEntry::query()
-            ->when($user->role->name == "Member", function ($query) use ($user) {
+            ->when($user->role->name == "member", function ($query) use ($user) {
                 // If the user is just a member only show results that are theirs
                 return $query->where('user_email', Encryption::encryptUsingKey($user->encryption_key, $user->email));
             })

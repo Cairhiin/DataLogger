@@ -2,26 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LogEntry;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Utilities\Encryption;
 
 class MessageController extends Controller
 {
     public function store(Request $request)
     {
-        if ($request->user()->tokenCan('log:create')) {
-            LogEntry::create([
-                'original_data' => serialize($request->originalData),
-                'new_data' => serialize($request->newData),
-                'user_email' => $request->userEmail,
-                'event_type' => $request->eventType,
-                'route' => $request->route,
-                'ip_address' => $request->ip
-            ]);
+        $enc_key = "";
 
-            return $request->user();
+        // Check if the user is allowed to create new log entries
+        if ($request->user()->tokenCan('message:create')) {
+            $enc_key = $request->user()->encryption_key;
+        } else {
+            return ["Status" => "Error", "Message" => "Not allowed to create new message events!"];
         }
 
-        return ["Status" => "Unauthorized", "Message" => "Not allowed to create new log events!"];
+        if ($enc_key == '' || $enc_key == null) {
+            return ["Status" => "Error", "Message" => "No encryption key set!"];
+        }
+
+        // Validate the request before encrypting it
+        $validated = $request->validate([
+            'app_id' => 'required',
+            'route' => 'required',
+            'event_type' => 'required',
+            'user_email' => 'required|email',
+            'ip' => 'required'
+        ]);
+
+        $message = [
+            'model' => $request->model,
+            'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
+            'event_type' => $request->event_type,
+            'route' => $request->route,
+            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
+            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
+        ];
+
+        // Serialize the log data and publish it on the RabbitMQ stream
+        $mqService = new \App\Services\RabbitMQService();
+        $mqService->publish(serialize($message), 'url');
+    }
+
+    public function index(Request $request)
+    {
+        $user = Auth()->user();
+        $enc_key = $user->encryption_key;
+        $hasAccess = false;
+
+        if ($user->role->name != "member") {
+            $hasAccess = true;
+        }
+
+        $logFile = file(storage_path() . '/logs/user-data.log');
+        $messageCollection = [];
+
+        foreach ($logFile as $line) {
+            // Remove the first part of the string to get the logged data
+            $s = explode(": ", $line);
+            $s = $s[1];
+            $content = unserialize(trim($s));
+
+            // Get the timestamp
+            $date = substr(explode(']', $line)[0], 1);
+
+            // Skip this line if the user is not an admin and the email doesn't match
+            if (!$hasAccess && Encryption::decryptUsingKey($enc_key, $content["user_email"]) != $user->email) {
+                continue;
+            }
+
+            // Remove the email from the data that is being sent to the frontend for privacy reasons
+            unset($content['user_email']);
+
+            // Decrypt App identifier and IP
+            $content["app_id"] = Encryption::decryptUsingKey($enc_key, $content["app_id"]);
+            $content["ip_address"] = Encryption::decryptUsingKey($enc_key, $content["ip_address"]);
+            $messageCollection[] = array('date' => $date, 'content' => $content);
+        }
+
+        return Inertia::render('Event/Messages', [
+            'messages' => $messageCollection,
+        ]);
     }
 }
