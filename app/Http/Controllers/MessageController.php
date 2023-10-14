@@ -52,13 +52,9 @@ class MessageController extends Controller
     {
         $user = Auth()->user();
         $enc_key = $user->encryption_key;
-        $hasAccess = false;
-        $page = $request->page == 0 || $request->page == "undefined" ? 1 : $request->page;
+        $hasAccess = $user->role->name == "Super Admin" ? true : false;
+        $page = ($request->page == 0 || $request->page) == "undefined" ? 1 : $request->page;
         $lineStart = ($page - 1) * self::PAGINATE;
-
-        if ($user->role->name != "member") {
-            $hasAccess = true;
-        }
 
         $logFile = file(storage_path() . '/logs/user-data.log');
         $messageCollection = [];
@@ -67,6 +63,7 @@ class MessageController extends Controller
         $numberOfResults = 0;
         $prev = $page == 1 ? null : '/event/messages?page=' . $page - 1;
 
+        // Set the prev labelled link
         $links[] = array("url" => $prev, "label" => "previous");
         $links[] = array("url" => "/event/messages?page=" . 1, "label" => 1);
 
@@ -92,7 +89,7 @@ class MessageController extends Controller
             // Increase number of results for pagination
             $numberOfResults++;
 
-
+            // If we are outside the paginated results we skip to next iteration
             if ($line_num < $lineStart || $line_num >= $lineStart + self::PAGINATE) {
                 continue;
             }
@@ -100,7 +97,7 @@ class MessageController extends Controller
             // Remove the email from the data that is being sent to the frontend for privacy reasons
             unset($content['user_email']);
 
-            // Decrypt App identifier and IP
+            // Decrypt App identifier and IP and add an id and created_at field
             $content["app_id"] = Encryption::decryptUsingKey($enc_key, $content["app_id"]);
             $content["ip_address"] = Encryption::decryptUsingKey($enc_key, $content["ip_address"]);
             $content["created_at"] = $date;
@@ -109,6 +106,7 @@ class MessageController extends Controller
             $messageCollection[] = $content;
         }
 
+        // Set the next labelled link
         $next = $page  * 15 >= $numberOfResults ? null : '/event/messages?page=' . $page + 1;
         $links[] = array("url" => $next, "label" => "next");
 

@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Log Entries">
         <template #header>
-            <h2>
+            <h2 class="font-semibold text-xl text-zinc-800 dark:text-zinc-100 leading-tight">
                 Database Events
             </h2>
         </template>

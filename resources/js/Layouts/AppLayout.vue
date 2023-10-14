@@ -190,14 +190,13 @@ onMounted(() => {
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-transparent">
-                <div class="max-w-7xl mx-auto py-6 px-6  dark:text-zinc-200 text-zinc-800 font-heading
-                text-2xl">
+                <div class="py-6 px-8 font-heading">
                     <slot name="header" />
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto py-6 lg:px-8 lg:flex lg:max-w-full">
+            <main class="max-w-7xl mx-auto py-6 lg:px-6 lg:flex lg:max-w-full">
                 <!-- Sidebar -->
                 <nav class="w-40"><!-- Navigation Links -->
                     <div class="hidden sm:-my-px sm:flex sm:flex-col">
