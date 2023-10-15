@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use SplObjectStorage;
 use Illuminate\Http\Client\Request;
 
 class FileModel
@@ -38,7 +39,7 @@ class FileModel
                 continue;
             }
 
-            // Decrypt App identifier and IP and add an id and created_at field
+            // Assign the attributes to the result object and decrypt those that need decrypting
             foreach ($this->attributes as $attribute) {
                 if (array_key_exists($attribute, $content)) {
                     if (in_array($attribute, $this->encrypted)) {
@@ -49,6 +50,7 @@ class FileModel
                 }
             }
 
+            // add an id and created_at field
             $obj->created_at = $date;
             $obj->id = $line_num;
 
@@ -60,7 +62,7 @@ class FileModel
 
     public function numberOfRecords()
     {
-        return count($this->file);
+        return $this->results ? count($this->results) : count($this->file);
     }
 
     public function paginate($perPage = 15)
@@ -82,24 +84,29 @@ class FileModel
         return ceil($this->numberOfRecords() / $perPage);
     }
 
-    public function getResults()
-    {
-        return $this->results;
-    }
-
     public function orderBy($attribute, $direction)
     {
-        switch ($attribute) {
-            case 'date':
-                if ($direction = 'DESC') {
-                    $this->results = array_reverse($this->results);
+        if ($attribute == 'date' && $direction == 'DESC') {
+            $this->results = array_reverse($this->results);
+        } else {
+            usort($this->results, function ($a, $b) use ($attribute, $direction) {
+                if ($direction == 'ASC') {
+                    return strcmp($a->$attribute, $b->$attribute);
+                } else {
+                    return strcmp($b->$attribute, $a->$attribute);
                 }
-                break;
-
-            default:
-                $this->results = array_reverse($this->results);
-                break;
+            });
         }
+
+        return $this;
+    }
+
+    public function filterBy($attribute, $value)
+    {
+        $this->results = array_reverse($this->results);
+        $this->results = array_filter($this->results, function ($result) use ($attribute, $value) {
+            return $result->$attribute == $value;
+        });
 
         return $this;
     }

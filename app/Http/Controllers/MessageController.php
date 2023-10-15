@@ -69,7 +69,7 @@ class MessageController extends Controller
         ];
 
         $data = new FileModel(file(storage_path() . '/logs/user-data.log'), $attributes, $encrypted, $user->role != "Member", $user);
-        $data = $data->all()->orderBy('date', 'DESC')->paginate(15);
+        $data = $data->all()->orderBy('app_id', 'DESC')->filterBy('app_id', 'DocumenterSource')->paginate(15);
 
         return Inertia::render('Event/Messages', [
             'messages' => $data["messages"],
