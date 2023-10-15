@@ -2,9 +2,6 @@
 
 namespace App\Utilities;
 
-use SplObjectStorage;
-use Illuminate\Http\Client\Request;
-
 class FileModel
 {
     private array $attributes;
@@ -103,7 +100,6 @@ class FileModel
 
     public function filterBy($attribute, $value)
     {
-        $this->results = array_reverse($this->results);
         $this->results = array_filter($this->results, function ($result) use ($attribute, $value) {
             return $result->$attribute == $value;
         });
