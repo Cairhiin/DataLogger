@@ -36,7 +36,7 @@ class RabbitMQService
                 Log::build([
                     'driver' => 'single',
                     'path' => storage_path('logs/user-data.log'),
-                ])->info($msg->body);
+                ])->info("URL event for route: {$data['route']} ###", $data);
             }
         };
 

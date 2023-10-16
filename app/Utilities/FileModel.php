@@ -24,9 +24,9 @@ class FileModel
             $obj = new \stdClass;
 
             // Remove the first part of the string to get the logged data
-            $s = explode(": ", $line);
+            $s = explode("###", $line);
             $s = $s[1];
-            $content = unserialize(trim($s));
+            $content = json_decode(trim($s), true);
 
             // Get the timestamp
             $date = substr(explode(']', $line)[0], 1);

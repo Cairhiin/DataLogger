@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Utilities\Encryption;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AppController extends Controller
+class LogAppController extends Controller
 {
     public function index()
     {

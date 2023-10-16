@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 
-class ModelController extends Controller
+class LogModelController extends Controller
 {
     public function index()
     {

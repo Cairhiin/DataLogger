@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Utilities\FileModel;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
-use App\Utilities\FileModel;
 use App\Utilities\ReadLogsFromFile;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -69,7 +70,7 @@ class MessageController extends Controller
         ];
 
         $data = new FileModel(file(storage_path() . '/logs/user-data.log'), $attributes, $encrypted, $user->role != "Member", $user);
-        $data = $data->all()->orderBy('app_id', 'DESC')->filterBy('route', 'delete.user')->paginate(15);
+        $data = $data->all()->orderBy('app_id', 'DESC')->paginate(self::PAGINATE);
 
         return Inertia::render('Event/Messages', [
             'messages' => $data["messages"],

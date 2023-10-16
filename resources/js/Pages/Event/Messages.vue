@@ -16,11 +16,19 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
+        <modal :show="modalIsShowing">
+            <event-details :event="modalContent" />
+            <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
+                @hide-details="hideDetails" @delete-log="deleteLog" />
+        </modal>
     </app-layout>
 </template>
 <script>
 import Pagination from '@/Components/Custom/Pagination.vue';
 import EventList from '@/Components/Events/EventList.vue';
+import EventDetails from '@/Components/Events/EventDetails.vue';
+import EventModalContent from '@/Components/Events/EventModalContent.vue';
+import Modal from '@/Components/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 
@@ -32,8 +40,11 @@ export default {
     },
     components: {
         EventList,
-        AppLayout,
-        Pagination
+        EventDetails,
+        EventModalContent,
+        Pagination,
+        Modal,
+        AppLayout
     },
     props: {
         messages: Array,
