@@ -18,40 +18,64 @@ class FileModel
         $this->file = $file;
     }
 
-    public function all()
+    public function get($amount)
     {
-        foreach ($this->file as $line_num => $line) {
-            $obj = new \stdClass;
+        $this->results = [];
+        for ($index = 0; $index < $amount - 1; $index++) {
+            $data = $this->formatMessage($this->file[$index]);
+            $this->assignAttributes($data, $index);
+        }
 
-            // Remove the first part of the string to get the logged data
-            $s = explode("###", $line);
-            $s = $s[1];
-            $content = json_decode(trim($s), true);
+        return $this;
+    }
 
-            // Get the timestamp
-            $date = substr(explode(']', $line)[0], 1);
+    private function formatMessage($message)
+    {
+        // Remove the first part of the string to get the logged data
+        $s = explode("###", $message);
+        $s = $s[1];
 
-            // Skip this line if the user is not an admin and the email doesn't match
-            if (!$this->hasAccess && Encryption::decryptUsingKey(request()->user()->encryption_key, $content["user_email"]) != request()->user()->email) {
-                continue;
-            }
+        // Get the timestamp
+        $date = substr(explode(']', $message)[0], 1);
 
-            // Assign the attributes to the result object and decrypt those that need decrypting
-            foreach ($this->attributes as $attribute) {
-                if (array_key_exists($attribute, $content)) {
-                    if (in_array($attribute, $this->encrypted)) {
-                        $obj->$attribute = Encryption::decryptUsingKey(request()->user()->encryption_key, $content[$attribute]);
-                    } else {
-                        $obj->$attribute = $content[$attribute];
-                    }
+        return ["date" => $date, "message" => json_decode(trim($s), true)];
+    }
+
+    private function assignAttributes($data, $index)
+    {
+        $obj = new \stdClass;
+        $content = $data["message"];
+        $date = $data["date"];
+
+        // Skip this data if the user is not an admin and the email doesn't match
+        if (!$this->hasAccess && Encryption::decryptUsingKey(request()->user()->encryption_key, $content["user_email"]) != request()->user()->email) {
+            return;
+        }
+
+        // Assign the attributes to the result object and decrypt those that need decrypting
+        foreach ($this->attributes as $attribute) {
+            if (array_key_exists($attribute, $content)) {
+                if (in_array($attribute, $this->encrypted)) {
+                    $obj->$attribute = Encryption::decryptUsingKey(request()->user()->encryption_key, $content[$attribute]);
+                } else {
+                    $obj->$attribute = $content[$attribute];
                 }
             }
+        }
 
-            // add an id and created_at field
-            $obj->created_at = $date;
-            $obj->id = $line_num;
+        // add an id and created_at field
+        $obj->created_at = $date;
+        $obj->id = $index;
 
-            $this->results[] = $obj;
+        $this->results[] = $obj;
+    }
+
+    public function all()
+    {
+        $this->results = [];
+        foreach ($this->file as $line_num => $line) {
+            $data = $this->formatMessage($line);
+            $this->assignAttributes($data, $line_num);
         }
 
         return $this;
@@ -59,7 +83,7 @@ class FileModel
 
     public function numberOfRecords()
     {
-        return $this->results ? count($this->results) : count($this->file);
+        return !empty($this->results) ? count($this->results) : count($this->file);
     }
 
     public function paginate($perPage = 15)
