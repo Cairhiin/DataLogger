@@ -71,7 +71,12 @@ class MessageController extends Controller
             }
         );
 
-        $data = new MessageFileModel(file($logFiles[0]));
+        if ($request->file) {
+            $data = new MessageFileModel(file($request->file));
+        } else {
+            $data = new MessageFileModel(file($logFiles[0]));
+        }
+
         $data = $data->all()->paginate(self::PAGINATE);
 
         return Inertia::render('Event/Messages', [

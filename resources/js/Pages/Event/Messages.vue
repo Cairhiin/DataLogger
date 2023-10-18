@@ -5,14 +5,7 @@
                 URL Events
             </h2>
         </template>
-        <section>
-            <h3>Available Log Files</h3>
-            <ul>
-                <li v-for="file in files" :key="file">
-                    <Link :href="file">{{ file.substring(file.lastIndexOf('/') + 1, file.length) }}</Link>
-                </li>
-            </ul>
-        </section>
+        <log-file-list :files="files" />
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold rounded-t
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
@@ -31,15 +24,15 @@
         </modal>
     </app-layout>
 </template>
+
 <script>
 import Pagination from '@/Components/Custom/Pagination.vue';
 import EventList from '@/Components/Events/EventList.vue';
 import EventDetails from '@/Components/Events/EventDetails.vue';
 import EventModalContent from '@/Components/Events/EventModalContent.vue';
 import Modal from '@/Components/Modal.vue';
-import { Link } from '@inertiajs/vue3';
+import LogFileList from '@/Components/Events/LogFileList.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-
 
 export default {
     Data() {
@@ -53,7 +46,7 @@ export default {
         EventModalContent,
         Pagination,
         Modal,
-        Link,
+        LogFileList,
         AppLayout
     },
     props: {

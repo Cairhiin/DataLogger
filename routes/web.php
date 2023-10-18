@@ -54,5 +54,5 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
 
     // URL events routes
     Route::get('/messages', [MessageController::class, 'index'])->name('event.messages.index');
-    Route::get('/messages/{file}', [MessageFileController::class, 'index'])->name('event.messages.files.index');
+    Route::get('/messages/{message}', [MessageController::class, 'show'])->name('event.messages.show');
 });
