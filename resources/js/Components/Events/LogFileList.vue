@@ -9,7 +9,9 @@
                 }}</Link>
             </li>
         </ol>
-        <div class="absolute right-2 bottom-0" @click="toggleExtendList"><i class="fa fa-solid fa-chevron-down text-xl"></i>
+        <div v-if="files.length > 5" class="absolute right-2 bottom-0" @click="toggleExtendList"><i class="fa fa-solid fa-chevron-down text-xl
+            text-zinc-900 bg:text-zinc-100 transition-transform duration-300 ease-in-out"
+                :class="{ 'rotate-180': isExtended }"></i>
         </div>
     </section>
 </template>
@@ -27,7 +29,7 @@ export default {
     },
     computed: {
         fileList() {
-            return this.isExtended ? this.files : this.files.slice(0, 1);
+            return this.isExtended ? this.files : this.files.slice(0, 5);
         }
     },
     methods: {
