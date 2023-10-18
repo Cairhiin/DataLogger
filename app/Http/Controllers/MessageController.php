@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Utilities\FileModel;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use App\Utilities\MessageFileModel;
 use App\Utilities\ReadLogsFromFile;
 use Illuminate\Support\Facades\Log;
 
@@ -55,26 +56,28 @@ class MessageController extends Controller
     {
         $user = Auth()->user();
 
-        $attributes = [
-            "app_id",
-            "ip_address",
-            "event_type",
-            "model",
-            "route",
-            "user_email"
-        ];
+        $logFiles = [];
+        $dir = storage_path('logs/');
 
-        $encrypted = [
-            "app_id",
-            "user_email"
-        ];
+        foreach (glob($dir . '[user-data-]*.log') as $filename) {
+            $logFiles[] = $filename;
+        }
 
-        $data = new FileModel(file(storage_path() . '/logs/user-data.log'), $attributes, $encrypted, $user->role != "Member", $user);
-        $data = $data->get(20)->paginate(self::PAGINATE);
+        // Sort by newest logfile first
+        usort(
+            $logFiles,
+            function ($file1, $file2) {
+                return filemtime($file1) < filemtime($file2);
+            }
+        );
+
+        $data = new MessageFileModel(file($logFiles[0]));
+        $data = $data->all()->paginate(self::PAGINATE);
 
         return Inertia::render('Event/Messages', [
             'messages' => $data["messages"],
-            'links' => $data["links"]
+            'links' => $data["links"],
+            'files' => $logFiles
         ]);
     }
 }

@@ -20,11 +20,7 @@ class FileModel
 
     public function get($amount)
     {
-        $this->results = [];
-        for ($index = 0; $index < $amount - 1; $index++) {
-            $data = $this->formatMessage($this->file[$index]);
-            $this->assignAttributes($data, $index);
-        }
+        $this->results = array_slice($this->results, 0, $amount - 1);
 
         return $this;
     }

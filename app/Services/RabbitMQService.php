@@ -34,7 +34,7 @@ class RabbitMQService
                 LogEntry::create($data);
             } else if ($routingKey == "url") {
                 Log::build([
-                    'driver' => 'single',
+                    'driver' => 'daily',
                     'path' => storage_path('logs/user-data.log'),
                 ])->info("URL event for route: {$data['route']} ###", $data);
             }

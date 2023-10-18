@@ -41,7 +41,7 @@ Route::middleware([
 });
 
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
-    Route::get('/messages', [MessageController::class, 'index'])->name('event.messages.index');
+    // Database events routes
     Route::get('/logs', [LogController::class, 'index'])->name('event.logs.index');
 
     // Routes to get a list of unique route, model and app names
@@ -51,4 +51,8 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
 
     Route::get('/logs/{id}', [LogController::class, 'show'])->name('event.logs.show');
     Route::delete('/logs/{id}', [LogController::class, 'destroy'])->name('event.logs.destroy');
+
+    // URL events routes
+    Route::get('/messages', [MessageController::class, 'index'])->name('event.messages.index');
+    Route::get('/messages/{file}', [MessageFileController::class, 'index'])->name('event.messages.files.index');
 });
