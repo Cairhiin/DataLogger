@@ -5,6 +5,7 @@
                 URL Events
             </h2>
         </template>
+        <log-file-list :files="fileList" @delete-file="deleteFile" @backup-file="backupFile" />
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold rounded-t
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
@@ -16,7 +17,6 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
-        <log-file-list :files="fileList" @delete-file="deleteFile" @backup-file="backUp" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
@@ -67,7 +67,7 @@ export default {
                 new_data: log.new_data
             };
         },
-        backUp(fileName) {
+        backupFile(fileName) {
             axios.get(`/event/files/${fileName}/copy`)
                 .then(response => {
                     if (response.data.status === 'Error') {
@@ -79,7 +79,25 @@ export default {
                 .catch(error => {
                     this.error = error;
                 });
-        }
+        },
+        deleteFile(fileName) {
+            if (!confirm("Are you certain you want to delete this log? It cannot be undone!")) {
+                return false;
+            }
+
+            axios.delete(`/event/files/${fileName}/`)
+                .then(response => {
+                    if (response.data.status === 'Error') {
+                        this.error = response.data.error.status;
+                    } else {
+                        this.fileList = response.data;
+                    }
+                })
+                .catch(error => {
+                    this.error = error;
+                });
+        },
+
     }
 }
 </script>

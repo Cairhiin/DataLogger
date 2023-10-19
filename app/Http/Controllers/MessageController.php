@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Utilities\FileModel;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
 use App\Utilities\MessageFileModel;
-use App\Utilities\ReadLogsFromFile;
-use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -54,33 +51,13 @@ class MessageController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth()->user();
-
-        $logFiles = [];
         $dir = storage_path('logs/');
+        $logFiles = getLogFiles();
 
-        foreach (glob($dir . '[user-data-]*.log') as $filename) {
-            $strippedFileName = explode('/', $filename)[1];
-            if (file_exists($dir . "/backups/" . $strippedFileName)) {
-                $fileData = ["name" => $filename, "backup" => true];
-            } else {
-                $fileData = ["name" => $filename, "backup" => false];
-            }
-            $logFiles[] = $fileData;
-        }
-
-        // Sort by newest logfile first
-        usort(
-            $logFiles,
-            function ($file1, $file2) {
-                return filemtime($file1["name"]) < filemtime($file2["name"]);
-            }
-        );
-
-        if ($request->file) {
-            $data = new MessageFileModel(file($request->file));
+        if ($request->file && file_exists($dir . $request->file)) {
+            $data = new MessageFileModel(file($dir . $request->file));
         } else {
-            $data = new MessageFileModel(file($logFiles[0]));
+            $data = new MessageFileModel(file($logFiles[0]["name"]));
         }
 
         $data = $data->all()->paginate(self::PAGINATE);
