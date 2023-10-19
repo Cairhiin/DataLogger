@@ -46,7 +46,7 @@ onMounted(() => {
 
         <Banner />
 
-        <div class="min-h-screen bg-white bg-gradient-to-b from-white to-zinc-100 dark:from-zinc-950 dark:to-zinc-900">
+        <div class="min-h-screen bg-white bg-gradient-to-b from-white to-zinc-100/50 dark:from-zinc-950 dark:to-zinc-900">
             <nav class="bg-white dark:bg-transparent">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-6 lg:px-8">

@@ -1,9 +1,10 @@
 <template>
-    <section class="bg-zinc-100 dark:bg-zinc-800 p-4 rounded relative row-span-2">
-        <h3 class="text-lg uppercase font-heading font-bold
-        text-slate-600 dark:text-zinc-400 mb-2">Available Log Files</h3>
-        <ul>
-            <li v-for="file in fileList" :key="file" class="text-zinc-900 dark:text-zinc-100 flex gap-4 py-1">
+    <section class="bg-zinc-100 dark:bg-zinc-800  rounded relative row-span-2 mb-4">
+        <h3 class="text-lg uppercase font-heading font-bold bg-zinc-300/25 dark:bg-zinc-700/25 px-4 py-2 rounded-t
+        text-zinc-600 dark:text-zinc-400 mb-2">Available Log Files</h3>
+        <ul class="p-4">
+            <li v-for="(file, index) in fileList" :key="file" class="text-zinc-900 dark:text-zinc-100 flex gap-4 py-1"
+                :class="{ 'hidden': index >= 5 && !isExtended }">
                 <span class="flex-1">{{
                     file.name.substring(file.name.lastIndexOf('/') + 1,
                         file.name.length)
