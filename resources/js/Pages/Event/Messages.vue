@@ -5,7 +5,6 @@
                 URL Events
             </h2>
         </template>
-        <log-file-list :files="files" />
         <div>
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold rounded-t
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
@@ -17,6 +16,7 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
+        <log-file-list :files="fileList" @delete-file="deleteFile" @backup-file="backUp" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
@@ -33,12 +33,15 @@ import EventModalContent from '@/Components/Events/EventModalContent.vue';
 import Modal from '@/Components/Modal.vue';
 import LogFileList from '@/Components/Events/LogFileList.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import axios from 'axios';
 
 export default {
-    Data() {
-        return {
+    data() {
+        return { fileList: [] }
 
-        }
+    },
+    mounted() {
+        this.fileList = this.files;
     },
     components: {
         EventList,
@@ -64,6 +67,19 @@ export default {
                 new_data: log.new_data
             };
         },
+        backUp(fileName) {
+            axios.get(`/event/files/${fileName}/copy`)
+                .then(response => {
+                    if (response.data.status === 'Error') {
+                        this.error = response.data.error.status;
+                    } else {
+                        this.fileList = response.data;
+                    }
+                })
+                .catch(error => {
+                    this.error = error;
+                });
+        }
     }
 }
 </script>

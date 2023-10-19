@@ -3,11 +3,12 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Http\Controllers\LogAppController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\LogAppController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LogModelController;
 use App\Http\Controllers\LogRouteController;
-use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +56,9 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     // URL events routes
     Route::get('/messages', [MessageController::class, 'index'])->name('event.messages.index');
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('event.messages.show');
+
+    // File routes
+    Route::get('/files/{name}/copy', [FileController::class, 'copy'])->name('event.files.copy');
+    Route::get('/files/{name}', [FileController::class, 'show'])->name('event.files.show');
+    Route::delete('/files/{name}', [FileController::class, 'delete'])->name('event.files.delete');
 });
