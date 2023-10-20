@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="Log Entries">
+    <app-layout title="Database Events">
         <template #header>
             <h2 class="font-semibold text-xl text-zinc-800 dark:text-zinc-100 leading-tight">
                 Database Events
@@ -20,7 +20,7 @@
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
-                @hide-details="hideDetails" @delete-log="deleteLog" />
+                @hide-details="hideDetails" @delete-log="deleteLog" :hasDecrypt="true" :hasDelete="true" />
         </modal>
     </app-layout>
 </template>

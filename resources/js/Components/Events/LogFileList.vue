@@ -10,7 +10,7 @@
                         file.name.length)
                 }}</span>
                 <secondary-button>
-                    <Link :href="`/event/messages?file=${file.name.substring(file.name.lastIndexOf('/') + 1,
+                    <Link :href="`/event/files?file=${file.name.substring(file.name.lastIndexOf('/') + 1,
                                 file.name.length)}`">View</Link>
                 </secondary-button>
                 <secondary-button :disabled="file.backup" @click="$emit('backupFile', file.name.substring(file.name.lastIndexOf('/') + 1,

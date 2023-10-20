@@ -1,5 +1,5 @@
 <template>
-    <app-layout>
+    <app-layout title="URL events">
         <template #header>
             <h2 class="font-semibold text-xl text-zinc-800 dark:text-zinc-100 leading-tight">
                 URL Events
@@ -19,8 +19,8 @@
         <pagination :links="links" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
-                @hide-details="hideDetails" @delete-log="deleteLog" />
+            <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails" :hasDecrypt="false"
+                :hasDelete="false" />
         </modal>
     </app-layout>
 </template>
@@ -37,7 +37,13 @@ import axios from 'axios';
 
 export default {
     data() {
-        return { fileList: [] }
+        return {
+            fileList: [],
+            modalIsShowing: false,
+            modalContent: {},
+            error: '',
+            isLoading: false,
+        }
 
     },
     mounted() {
@@ -59,13 +65,11 @@ export default {
     },
     methods: {
         showDetails(id) {
-            this.selectedId = id;
             this.modalIsShowing = true;
-            const log = this.getSelectedLog();
-            this.encrypted = {
-                original_data: log.original_data,
-                new_data: log.new_data
-            };
+            this.modalContent = this.messages.find(message => message.id === id);
+        },
+        hideDetails() {
+            this.modalIsShowing = false;
         },
         backupFile(fileName) {
             axios.get(`/event/files/${fileName}/copy`)

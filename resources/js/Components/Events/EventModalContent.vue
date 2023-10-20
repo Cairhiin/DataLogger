@@ -8,11 +8,11 @@
             <secondary-button @click="$emit('hideDetails')">
                 <span class="text-base fa fa-solid fa-xmark"></span>
                 &nbsp;&nbsp;Close</secondary-button>
-            <secondary-button @click="$emit('decryptData')">
+            <secondary-button v-if="hasDecrypt" @click="$emit('decryptData')">
                 <span :class="{ 'text-sm fa fa-solid fa-spinner fa-spin': isLoading }"></span>
                 <span :class="{ 'text-sm fa fa-solid fa-key': !isLoading }"></span>
                 &nbsp;&nbsp;Decrypt</secondary-button>
-            <danger-button @click="$emit('deleteLog')">Delete</danger-button>
+            <danger-button v-if="hasDelete" @click="$emit('deleteLog')">Delete</danger-button>
         </div>
     </div>
 </template>
@@ -30,7 +30,9 @@ export default {
     },
     props: {
         error: String,
-        isLoading: Boolean
+        isLoading: Boolean,
+        hasDelete: Boolean,
+        hasDecrypt: Boolean
     }
 }
 </script>

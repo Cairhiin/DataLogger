@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +15,6 @@ use App\Http\Controllers\MessageController;
 */
 
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
-    Route::post('/message', [MessageController::class, 'store'])->name('event.message.store');
+    Route::post('/message', [FileController::class, 'store'])->name('event.message.store');
     Route::post('/log', [LogController::class, 'store'])->name('event.log.store');
 });
