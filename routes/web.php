@@ -53,11 +53,8 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     Route::delete('/logs/{id}', [LogController::class, 'destroy'])->name('event.logs.destroy');
 
     // URL events routes
-    Route::get('/files', [FileController::class, 'index'])->name('event.messages.index');
+    Route::get('/files', [FileController::class, 'index'])->name('event.files.index');
     Route::get('/files/{name}', [FileController::class, 'show'])->name('event.files.show');
-
-    // File routes
     Route::get('/files/{name}/copy', [FileController::class, 'copy'])->name('event.files.copy');
-    Route::get('/files/{name}/message/{message}', [FileController::class, 'show'])->name('event.files.messages.show');
     Route::delete('/files/{name}', [FileController::class, 'delete'])->name('event.files.delete');
 });

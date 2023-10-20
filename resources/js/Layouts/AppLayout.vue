@@ -208,7 +208,7 @@ onMounted(() => {
                             <span class="fa fa-solid fa-database mr-3 opacity-50 transition-all duration-500 w-4"></span>
                             Database Events
                         </NavLink>
-                        <NavLink :href="route('event.messages.index')" :active="route().current('event.messages.index')">
+                        <NavLink :href="route('event.files.index')" :active="route().current('event.files.index')">
                             <span class="fa fa-solid fa-link mr-3 opacity-50 transition-all duration-500 w-4"></span> Url
                             Events
                         </NavLink>
