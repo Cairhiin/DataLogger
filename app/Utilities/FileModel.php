@@ -85,13 +85,13 @@ class FileModel
     public function paginate($perPage = 15)
     {
         $links = [];
-        $links[] = array("url" => (request()->page == null || request()->page == 1) ? null : '/event/files?page=' . request()->page - 1, "label" => "previous");
+        $links[] = array("url" => (request()->page == null || request()->page == 1) ? null : '?page=' . request()->page - 1, "label" => "previous");
 
         for ($page = 1; $page <= $this->getNumberOfPages($perPage); $page++) {
-            $links[] = array("url" => '/event/files?page=' . $page, "label" => $page);
+            $links[] = array("url" => '?page=' . $page, "label" => $page);
         }
 
-        $links[] = array("url" => request()->page >= $this->getNumberOfPages($perPage) ? null : '/event/files?page=' . request()->page + 1, "label" => "next");
+        $links[] = array("url" => request()->page >= $this->getNumberOfPages($perPage) ? null : '?page=' . request()->page + 1, "label" => "next");
 
         return ["links" => $links, "messages" => array_slice($this->results, (request()->page - 1) * $perPage, $perPage)];
     }
