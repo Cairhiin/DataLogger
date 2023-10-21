@@ -51,20 +51,23 @@ class FileController extends Controller
 
     public function index(Request $request)
     {
+        $data = [];
         $dir = storage_path('logs/');
         $logFiles = getLogFiles();
 
         if ($request->file && file_exists($dir . $request->file)) {
             $data = new MessageFileModel(file($dir . $request->file));
-        } else if (!is_empty(getLogFiles())) {
+        } else if (!empty(getLogFiles())) {
             $data = new MessageFileModel(file($logFiles[0]["name"]));
         }
 
-        $data = $data->all()->paginate(self::PAGINATE);
+        if (!empty($data)) {
+            $data = $data->all()->paginate(self::PAGINATE);
+        }
 
         return Inertia::render('Event/Messages', [
-            'messages' => $data["messages"],
-            'links' => $data["links"],
+            'messages' => !empty($data) ? $data["messages"] : $data,
+            'links' => !empty($data) ? $data["links"] : $data,
             'files' => $logFiles
         ]);
     }
