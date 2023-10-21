@@ -56,7 +56,7 @@ class FileController extends Controller
 
         if ($request->file && file_exists($dir . $request->file)) {
             $data = new MessageFileModel(file($dir . $request->file));
-        } else {
+        } else if (!is_empty(getLogFiles())) {
             $data = new MessageFileModel(file($logFiles[0]["name"]));
         }
 
