@@ -7,7 +7,10 @@ class FileModel
     private array $attributes;
     private array $encrypted;
     private $file;
+    private string $filename;
     private array $results;
+    private string $filter;
+    private string $filterValue;
     private $hasAccess;
 
     function __construct($file, $attributes = [], $encrypted = [])
@@ -15,7 +18,10 @@ class FileModel
         $this->attributes = $attributes;
         $this->encrypted = $encrypted;
         $this->hasAccess = request()->user()->role != "Member";
-        $this->file = $file;
+        $this->file = file($file);
+        $this->filename = basename($file);
+        $this->filter = "";
+        $this->filterValue = "";
     }
 
     public function get($amount)
@@ -86,13 +92,27 @@ class FileModel
     public function paginate($perPage = 15)
     {
         $links = [];
-        $links[] = array("url" => (request()->page == null || request()->page == 1) ? null : '?page=' . request()->page - 1, "label" => "previous");
-
-        for ($page = 1; $page <= $this->getNumberOfPages($perPage); $page++) {
-            $links[] = array("url" => '?page=' . $page, "label" => $page);
+        if ($this->filter !== '') {
+            $links[] = array("url" => (request()->page == null || request()->page == 1) ?
+                null : '?page=' . request()->page - 1 . '&' . $this->filter . '&file=' . $this->filename, "label" => "previous");
+        } else {
+            $links[] = array("url" => (request()->page == null || request()->page == 1) ? null : '?page=' . request()->page - 1 . '&file=' . $this->filename, "label" => "previous");
         }
 
-        $links[] = array("url" => request()->page >= $this->getNumberOfPages($perPage) ? null : '?page=' . request()->page + 1, "label" => "next");
+        for ($page = 1; $page <= $this->getNumberOfPages($perPage); $page++) {
+            if ($this->filter !== '') {
+                $links[] = array("url" => '?page=' . $page . '&' . $this->filter . '=' . $this->filterValue . '&file=' . $this->filename, "label" => $page);
+            } else {
+                $links[] = array("url" => '?page=' . $page . '&file=' . $this->filename, "label" => $page);
+            }
+        }
+
+        if ($this->filter !== '') {
+            $links[] = array("url" => request()->page >= $this->getNumberOfPages($perPage) ? null :
+                '?page=' . request()->page + 1 . '&' . $this->filter . '=' . $this->filterValue . '&file=' . $this->filename, "label" => "next");
+        } else {
+            $links[] = array("url" => request()->page >= $this->getNumberOfPages($perPage) ? null : '?page=' . request()->page + 1 . '&file=' . $this->filename, "label" => "next");
+        }
 
         return ["links" => $links, "messages" => array_slice($this->results, (request()->page - 1) * $perPage, $perPage)];
     }
@@ -119,6 +139,36 @@ class FileModel
     {
         $this->results = array_filter($this->results, function ($result) use ($attribute, $value) {
             return $result->$attribute == $value;
+        });
+
+        $this->filter = $attribute;
+        $this->filterValue = $value;
+        return $this;
+    }
+
+    public function getUniqueValuesPerAttribute($array, $attribute)
+    {
+        $values = [];
+        foreach ($array as $obj) {
+            $values[] = $obj->$attribute;
+        }
+
+        return array_values(array_unique($values));
+    }
+
+    public function getUniqueValues()
+    {
+        foreach ($this->attributes as $attribute) {
+            $uniqueValues[$attribute] = $this->getUniqueValuesPerAttribute($this->results, $attribute);
+        }
+
+        return $uniqueValues;
+    }
+
+    public function getUniqueResults($attribute)
+    {
+        $this->results = array_filter($this->results, function ($result) use ($attribute) {
+            return $result[$attribute];
         });
 
         return $this;

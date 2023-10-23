@@ -17,7 +17,8 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
-        <event-filter-form :events="messages" @onSubmit="onSubmit" @onReset="onReset" />
+        <event-filter-form :events="messages" @onSubmit="onSubmit" @onReset="onReset" :routes="uniqueValues.route"
+            :apps="uniqueValues.app_id" :models="uniqueValues.model" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails" :hasDecrypt="false"
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+import { router } from '@inertiajs/vue3'
 import Pagination from '@/Components/Custom/Pagination.vue';
 import EventList from '@/Components/Events/EventList.vue';
 import EventDetails from '@/Components/Events/EventDetails.vue';
@@ -64,7 +66,9 @@ export default {
     props: {
         messages: Array,
         links: Array,
-        files: Array
+        files: Array,
+        uniqueValues: Array,
+        url: String
     },
     methods: {
         showDetails(id) {
@@ -104,7 +108,12 @@ export default {
                     this.error = error;
                 });
         },
-
+        onSubmit(filter, param) {
+            router.get(`/event/files?file=${this.url}`, { [filter]: param });
+        },
+        onReset() {
+            router.get(`/event/files?file=${this.url}`);
+        }
     }
 }
 </script>

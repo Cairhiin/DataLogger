@@ -52,23 +52,35 @@ class FileController extends Controller
     public function index(Request $request)
     {
         $data = [];
+        $unique = [];
         $dir = storage_path('logs/');
         $logFiles = getLogFiles();
 
         if ($request->file && file_exists($dir . $request->file)) {
-            $data = new MessageFileModel(file($dir . $request->file));
+            $data = new MessageFileModel($dir . $request->file);
         } else if (!empty(getLogFiles())) {
-            $data = new MessageFileModel(file($logFiles[0]["name"]));
+            $data = new MessageFileModel($logFiles[0]["name"]);
         }
 
         if (!empty($data)) {
-            $data = $data->all()->paginate(self::PAGINATE);
+            $unique = $data->all()->getUniqueValues();
+            if ($request->model) {
+                $data = $data->all()->filterBy('model', $request->model)->paginate(self::PAGINATE);
+            } else if ($request->app) {
+                $data = $data->all()->filterBy('app_id', $request->app)->paginate(self::PAGINATE);
+            } else if ($request->route) {
+                $data = $data->all()->filterBy('route', $request->route)->paginate(self::PAGINATE);
+            } else {
+                $data = $data->all()->paginate(self::PAGINATE);
+            }
         }
 
         return Inertia::render('Event/Messages', [
             'messages' => !empty($data) ? $data["messages"] : $data,
             'links' => !empty($data) ? $data["links"] : $data,
-            'files' => $logFiles
+            'files' => $logFiles,
+            'uniqueValues' => $unique,
+            'url' => $request->file,
         ]);
     }
 

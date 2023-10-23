@@ -31,7 +31,7 @@
 <script>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -49,9 +49,9 @@ export default {
     computed: {
         filters: function () {
             return {
-                "route": () => this.routes.map(r => r.route),
-                "model": () => this.models.map(m => m.model),
-                "app": () => this.apps.map(a => a.app_id)
+                "route": () => this.routes.map(r => r.route ? r.route : r),
+                "model": () => this.models.map(m => m.model ? m.model : m),
+                "app": () => this.apps.map(a => a.app_id ? a.app_id : a)
             };
         },
         getFilterType() {
