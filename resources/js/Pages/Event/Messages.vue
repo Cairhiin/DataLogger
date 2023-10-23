@@ -17,6 +17,7 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
+        <event-filter-form :events="messages" @onSubmit="onSubmit" @onReset="onReset" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails" :hasDecrypt="false"
@@ -30,6 +31,7 @@ import Pagination from '@/Components/Custom/Pagination.vue';
 import EventList from '@/Components/Events/EventList.vue';
 import EventDetails from '@/Components/Events/EventDetails.vue';
 import EventModalContent from '@/Components/Events/EventModalContent.vue';
+import EventFilterForm from '@/Components/Events/EventFilterForm.vue';
 import Modal from '@/Components/Modal.vue';
 import LogFileList from '@/Components/Events/LogFileList.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -53,6 +55,7 @@ export default {
         EventList,
         EventDetails,
         EventModalContent,
+        EventFilterForm,
         Pagination,
         Modal,
         LogFileList,

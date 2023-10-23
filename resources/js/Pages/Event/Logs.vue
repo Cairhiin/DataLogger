@@ -16,7 +16,8 @@
             <event-list :events="logsList.data" @show-details="showDetails" />
         </div>
         <pagination :links="logsList.links" />
-        <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" />
+        <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" :routes="routes" :apps="apps"
+            :models="models" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
@@ -54,7 +55,10 @@ export default {
             modalIsShowing: false,
             isLoading: false,
             error: null,
-            logsList: this.logs
+            logsList: this.logs,
+            routes: [],
+            apps: [],
+            models: []
         }
     },
     props: {
@@ -169,6 +173,32 @@ export default {
         onReset() {
             router.get('/event/logs');
         }
-    }
+    },
+    mounted() {
+        axios.get(`/event/logs/routes/`)
+            .then(response => {
+                if (response.data.error) {
+                    this.error = response.data.error.status;
+                } else {
+                    this.routes = response.data;
+                }
+            });
+        axios.get(`/event/logs/apps/`)
+            .then(response => {
+                if (response.data.error) {
+                    this.error = response.data.error.status;
+                } else {
+                    this.apps = response.data;
+                }
+            });
+        axios.get(`/event/logs/models/`)
+            .then(response => {
+                if (response.data.error) {
+                    this.error = response.data.error.status;
+                } else {
+                    this.models = response.data;
+                }
+            });
+    },
 }
 </script>

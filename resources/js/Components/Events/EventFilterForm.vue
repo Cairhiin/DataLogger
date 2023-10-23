@@ -40,36 +40,7 @@ export default {
                 param: null,
             },
             filterType: [],
-            routes: [],
-            apps: [],
-            models: []
         }
-    },
-    mounted() {
-        axios.get(`/event/logs/routes/`)
-            .then(response => {
-                if (response.data.error) {
-                    this.error = response.data.error.status;
-                } else {
-                    this.routes = response.data;
-                }
-            });
-        axios.get(`/event/logs/apps/`)
-            .then(response => {
-                if (response.data.error) {
-                    this.error = response.data.error.status;
-                } else {
-                    this.apps = response.data;
-                }
-            });
-        axios.get(`/event/logs/models/`)
-            .then(response => {
-                if (response.data.error) {
-                    this.error = response.data.error.status;
-                } else {
-                    this.models = response.data;
-                }
-            });
     },
     components: {
         PrimaryButton,
@@ -101,7 +72,10 @@ export default {
         }
     },
     props: {
-        events: Array
+        events: Array,
+        routes: Array,
+        apps: Array,
+        models: Array
     }
 }
 </script>
