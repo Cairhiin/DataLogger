@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-zinc-100 dark:bg-zinc-800  rounded relative row-span-2 mb-6">
+    <section class="bg-zinc-100 dark:bg-zinc-800  rounded relative row-span-2 mb-8">
         <h3 class="text-lg uppercase font-heading font-bold bg-zinc-300/25 dark:bg-zinc-700/25 px-4 py-2 rounded-t
         text-zinc-600 dark:text-zinc-400 mb-2">Available Log Files</h3>
         <ul class="p-4">

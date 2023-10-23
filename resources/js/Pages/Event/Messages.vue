@@ -67,7 +67,7 @@ export default {
         messages: Array,
         links: Array,
         files: Array,
-        uniqueValues: Array,
+        uniqueValues: Object,
         url: String
     },
     methods: {
