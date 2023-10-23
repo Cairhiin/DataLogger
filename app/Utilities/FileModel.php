@@ -74,6 +74,7 @@ class FileModel
             $this->assignAttributes($data, $line_num);
         }
 
+        $this->results = array_reverse($this->results);
         return $this;
     }
 
@@ -103,17 +104,13 @@ class FileModel
 
     public function orderBy($attribute, $direction)
     {
-        if ($attribute == 'date' && $direction == 'DESC') {
-            $this->results = array_reverse($this->results);
-        } else {
-            usort($this->results, function ($a, $b) use ($attribute, $direction) {
-                if ($direction == 'ASC') {
-                    return strcmp($a->$attribute, $b->$attribute);
-                } else {
-                    return strcmp($b->$attribute, $a->$attribute);
-                }
-            });
-        }
+        usort($this->results, function ($a, $b) use ($attribute, $direction) {
+            if ($direction == 'ASC') {
+                return strcmp($a->$attribute, $b->$attribute);
+            } else {
+                return strcmp($b->$attribute, $a->$attribute);
+            }
+        });
 
         return $this;
     }
