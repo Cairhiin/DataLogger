@@ -11,13 +11,15 @@ class FileModel
     private array $results;
     private string $filter;
     private string $filterValue;
+    private string $customerIdentifier;
     private $hasAccess;
 
-    function __construct($file, $attributes = [], $encrypted = [])
+    function __construct($file, $identifier, $attributes = [], $encrypted = [], $access = [])
     {
         $this->attributes = $attributes;
         $this->encrypted = $encrypted;
-        $this->hasAccess = request()->user()->role != "Member";
+        $this->customerIdentifier = $identifier;
+        $this->hasAccess = empty($access) || in_array(request()->user()->role->name, $access);
         $this->file = file($file);
         $this->filename = basename($file);
         $this->filter = "";
@@ -50,7 +52,10 @@ class FileModel
         $date = $data["date"];
 
         // Skip this data if the user is not an admin and the email doesn't match
-        if (!$this->hasAccess && Encryption::decryptUsingKey(request()->user()->encryption_key, $content["user_email"]) != request()->user()->email) {
+        if (!$this->hasAccess && Encryption::decryptUsingKey(
+            request()->user()->encryption_key,
+            $content[$this->customerIdentifier]
+        ) != request()->user()->email) {
             return;
         }
 

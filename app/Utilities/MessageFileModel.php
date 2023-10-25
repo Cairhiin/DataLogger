@@ -2,11 +2,13 @@
 
 namespace App\Utilities;
 
+use App\Models\Role;
+
 class MessageFileModel extends FileModel
 {
     function __construct($file)
     {
-        parent::__construct($file, self::$attributes, self::$encrypted);
+        parent::__construct($file, self::$identifier, self::$attributes, self::$encrypted, self::$access);
     }
 
     static public $attributes = [
@@ -23,4 +25,11 @@ class MessageFileModel extends FileModel
         "user_email",
         "ip_address"
     ];
+
+    static public $access = [
+        "Super Admin",
+        "Admin"
+    ];
+
+    static public $identifier = "user_email";
 }
