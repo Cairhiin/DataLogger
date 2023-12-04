@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
 use App\Utilities\MessageFileModel;
+use Illuminate\Support\Facades\Auth;
 
 class FileController extends Controller
 {
@@ -30,18 +31,16 @@ class FileController extends Controller
         $validated = $request->validate([
             'app_id' => 'required',
             'route' => 'required',
-            'event_type' => 'required',
             'user_email' => 'required|email',
             'ip' => 'required'
         ]);
 
         $message = [
-            'model' => $request->model,
             'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
-            'event_type' => $request->event_type,
             'route' => $request->route,
             'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
-            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
+            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
+            'user' => $request->user()->id
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream
@@ -54,11 +53,11 @@ class FileController extends Controller
         $data = [];
         $unique = [];
         $dir = storage_path('logs/');
-        $logFiles = getLogFiles();
+        $logFiles = getMessageLogFiles();
 
         if ($request->file && file_exists($dir . $request->file)) {
             $data = new MessageFileModel($dir . $request->file);
-        } else if (!empty(getLogFiles())) {
+        } else if (!empty($logFiles)) {
             $data = new MessageFileModel($logFiles[0]["name"]);
         }
 
@@ -88,6 +87,7 @@ class FileController extends Controller
     {
         $user = Auth()->user();
         $dir = storage_path('logs/');
+        $logFiles = getMessageLogFiles();
 
         if (!Auth()->check() || $user->role->name !== "Super Admin") {
             return ["Status" => "Error", "Message" => "Unauthorized"];
@@ -98,13 +98,14 @@ class FileController extends Controller
         }
 
         unlink($dir . $request->name);
-        return getLogFiles();
+        return $logFiles;
     }
 
     function copy(Request $request)
     {
         $user = Auth()->user();
         $dir = storage_path('logs/');
+        $logFiles = getMessageLogFiles();
 
         if (!Auth()->check() || $user->role->name !== "Super Admin") {
             return ["Status" => "Error", "Message" => "Unauthorized"];
@@ -116,6 +117,6 @@ class FileController extends Controller
 
         copy($dir . $request->name, $dir . "/backups/" . $request->name);
 
-        return getLogFiles();
+        return $logFiles;
     }
 }

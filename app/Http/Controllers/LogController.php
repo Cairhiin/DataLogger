@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LogController extends Controller
@@ -46,7 +47,8 @@ class LogController extends Controller
             'event_type' => $request->event_type,
             'route' => $request->route,
             'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
-            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip)
+            'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
+            'user' => $request->user()->id
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\LogEntry;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
+use Illuminate\Support\Facades\Auth;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class RabbitMQService
