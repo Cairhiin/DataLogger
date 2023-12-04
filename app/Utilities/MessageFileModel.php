@@ -12,12 +12,13 @@ class MessageFileModel extends FileModel
     }
 
     static public $attributes = [
+        "id",
         "app_id",
         "ip_address",
-        "event_type",
-        "model",
         "route",
-        "user_email"
+        "user_email",
+        "user",
+        "name"
     ];
 
     static public $encrypted = [

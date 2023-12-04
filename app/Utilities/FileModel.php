@@ -52,10 +52,7 @@ class FileModel
         $date = $data["date"];
 
         // Skip this data if the user is not an admin and the email doesn't match
-        if (!$this->hasAccess && Encryption::decryptUsingKey(
-            request()->user()->encryption_key,
-            $content[$this->customerIdentifier]
-        ) != request()->user()->email) {
+        if (!$this->hasAccess && array_key_exists("user", $content) && request()->user()->id != $content["user"]) {
             return;
         }
 
@@ -72,7 +69,6 @@ class FileModel
 
         // add an id and created_at field
         $obj->created_at = $date;
-        $obj->id = $index;
 
         $this->results[] = $obj;
     }

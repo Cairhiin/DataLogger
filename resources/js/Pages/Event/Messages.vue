@@ -10,7 +10,7 @@
             <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold rounded-t
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
                 <div class="col-span-2">Date</div>
-                <div>Data</div>
+                <div>User</div>
                 <div>Route</div>
                 <div>Application ID</div>
             </div>
@@ -21,8 +21,8 @@
             :apps="uniqueValues.app_id" :models="uniqueValues.model" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails" :hasDecrypt="false"
-                :hasDelete="false" />
+            <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails"
+                @decrypt-data="decryptData" :hasDecrypt="true" :hasDelete="false" />
         </modal>
     </app-layout>
 </template>
@@ -47,6 +47,7 @@ export default {
             modalContent: {},
             error: '',
             isLoading: false,
+            selectedId: ''
         }
 
     },
@@ -72,6 +73,7 @@ export default {
     },
     methods: {
         showDetails(id) {
+            this.selectedId = id;
             this.modalIsShowing = true;
             this.modalContent = this.messages.find(message => message.id === id);
         },
@@ -89,6 +91,25 @@ export default {
                 })
                 .catch(error => {
                     this.error = error;
+                });
+        },
+        decryptData() {
+            this.isLoading = true;
+            console.log(this.selectedId)
+            axios.get(`/event/messages/${this.selectedId}/`)
+                .then(response => {
+                    if (response.data.error) {
+                        this.error = response.data.error.status;
+                    } else {
+                        this.decrypted.original_data = response.data.original_data;
+                        this.decrypted.new_data = response.data.new_data;
+                    }
+                })
+                .catch(error => {
+                    this.error = error;
+                })
+                .finally(() => {
+                    this.isLoading = false;
                 });
         },
         deleteFile(fileName) {

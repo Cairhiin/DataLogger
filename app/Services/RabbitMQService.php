@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\LogEntry;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
-use Illuminate\Support\Facades\Auth;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Illuminate\Support\Str;
 
 class RabbitMQService
 {
@@ -17,6 +17,11 @@ class RabbitMQService
         $channel->exchange_declare(env('MQ_EXCHANGE'), 'direct', false, false, false);
         $channel->queue_declare(env('MQ_QUEUE'), false, true, false, false);
         $channel->queue_bind(env('MQ_QUEUE'), env('MQ_EXCHANGE'), $key);
+
+        $message = unserialize($message);
+        $message += array('id' => Str::orderedUuid()->toString());
+        $message = serialize($message);
+
         $msg = new AMQPMessage($message);
         $channel->basic_publish($msg, env('MQ_EXCHANGE'), $key);
         echo " [x] Sent $message\n";

@@ -7,7 +7,7 @@
         <div class="col-span-2">
             {{ formatDate(log.created_at) }} </div>
         <div>
-            {{ log.model }}
+            {{ log.name }}
         </div>
         <div>
             {{ log.route }}
