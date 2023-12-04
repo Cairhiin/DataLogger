@@ -95,12 +95,7 @@ $body =
         "app_id" => $app_id
     ];
 $token = env('DATA_LOGGER_API_KEY');
-$apiResponse = Http::withToken($token)->accept('application/json')->post(env('DATA_LOGGER_API_URL'), $body, [
-    'headers' =>
-            [
-                'Authorization' => "Bearer {$token}"
-            ]
-    ]);
+$apiResponse = Http::withToken($token)->accept('application/json')->post(env('DATA_LOGGER_API_URL'), $body);
 ```
 
 The DataLogger application will be available at http://localhost:8000.
