@@ -80,37 +80,22 @@ php artisan mq:consume
 
 ### Send API requests from the application you want to log:
 
-Make certain your axios request is correct and has all the fields as displayed
-in the example below. You can place this axios call in the methods of a Model Observer to fire
-everytime a model's data is modified, created or deleted.
-
-ALL FIELDS ARE REQUIRED! If either the new_data or original_data field is empty in case for
-example a create or delete event pass null instead.
+Make certain your guzzle request is correct and has all the fields as displayed
+in the example below. You can place this guzzle request in the methods of a Model Observer to fire
+everytime a model's data is modified, created or deleted or if you are monitoring URL event create a laravel middleware
+that fires on every page load.
 
 ```
-axios.post('<YOUR_APP_URL>/api/events/log', {
-        'new_data' => <CHANGED_DATA>,
-        'original_data' => <ORIGINAL_DATA>,
-        'user_email' => <USER_EMAIL>,
-        'event_type' => <TYPE_OF_THE_EVENT>,
-        'model' => <MODEL_OF_DATA_CHANGED>,
-        'app_id' => <YOUR_APP_NAME>,
-        'route' => <ROUTE>,
-        'ip_address' => <IP_ADDRESS>
-    }, {
-        'headers' =>
-        {
-            'Authorization' => "Bearer {YOUR_TOKEN}",
-            'Accept' => 'application/json'
-        }
-    })
-    .then(function(res) => {
-        // Do something with the response
-    })
-    .catch(function(err) => {
-        // Do something with the error
-    })
-
+$body =
+    [
+        "ip" => $ip,
+        "route" => $route,
+        "name" => $name,
+        "user_email" => $email,
+        "app_id" => $app_id
+    ];
+$token = env('DATA_LOGGER_API_KEY');
+$apiResponse = Http::withToken($token)->accept('application/json')->post(env('DATA_LOGGER_API_URL'), $body);
 ```
 
 The DataLogger application will be available at http://localhost:8000.
