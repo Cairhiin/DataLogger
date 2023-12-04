@@ -88,11 +88,11 @@ that fires on every page load.
 ```
 $body =
     [
-           "ip" => $userIP,
-            "route" => $routeName,
-            "name" => $user ? $user->initialen . " " . $userTussen . " " . $user->achternaam : 'Guest',
-            "user_email" => $user ? $user->email : '',
-            "app_id" => "Documenter"
+        "ip" => $ip,
+        "route" => $route,
+        "name" => $name,
+        "user_email" => $email,
+        "app_id" => $app_id
     ];
 $token = env('DATA_LOGGER_API_KEY');
 $apiResponse = Http::withToken($token)->accept('application/json')->post(env('DATA_LOGGER_API_URL'), $body, [
