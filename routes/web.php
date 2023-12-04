@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LogAppController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LogModelController;
 use App\Http\Controllers\LogRouteController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,7 @@ Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     Route::delete('/logs/{id}', [LogController::class, 'destroy'])->name('event.logs.destroy');
 
     // URL events routes
+    Route::get('/files/{name}/messages/{id}', [MessageController::class, 'show'])->name('event.files.messages.show');
     Route::get('/files', [FileController::class, 'index'])->name('event.files.index');
     Route::get('/files/{name}', [FileController::class, 'show'])->name('event.files.show');
     Route::get('/files/{name}/copy', [FileController::class, 'copy'])->name('event.files.copy');

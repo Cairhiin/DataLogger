@@ -26,11 +26,20 @@ class FileModel
         $this->filterValue = "";
     }
 
-    public function get($amount)
+    public function get($id)
     {
-        $this->results = array_slice($this->results, 0, $amount - 1);
+        $this->results = array_filter($this->results, function ($result) use ($id) {
+            return $id === $result->id;
+        });
 
-        return $this;
+        $result = new \stdClass;
+
+        if (!empty($this->results)) {
+            $result = $this->results[0];
+            $result->name = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->name);
+        }
+
+        return $result;
     }
 
     private function formatMessage($message)

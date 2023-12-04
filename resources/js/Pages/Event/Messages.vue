@@ -44,10 +44,15 @@ export default {
         return {
             fileList: [],
             modalIsShowing: false,
-            modalContent: {},
             error: '',
             isLoading: false,
-            selectedId: ''
+            selectedId: '',
+            decrypted: {
+                name: null,
+            },
+            encrypted: {
+                name: null,
+            },
         }
 
     },
@@ -71,14 +76,39 @@ export default {
         uniqueValues: Object,
         url: String
     },
+    computed: {
+        modalContent() {
+            const message = this.getSelectedMessage();
+
+            if (this.decrypted.name) {
+                message.name = this.decrypted.name;
+            }
+
+            return message;
+        },
+    },
     methods: {
+        getSelectedMessage() {
+            return this.messages.filter(log => log.id === this.selectedId)[0];
+        },
         showDetails(id) {
             this.selectedId = id;
             this.modalIsShowing = true;
-            this.modalContent = this.messages.find(message => message.id === id);
+            const message = this.getSelectedMessage();
+
+            this.encrypted = {
+                name: message.name
+            };
         },
         hideDetails() {
             this.modalIsShowing = false;
+            const message = this.getSelectedMessage();
+
+            if (this.decrypted.name) {
+                message.name = this.encrypted.name;
+                this.decrypted.name = null;
+            }
+
         },
         backupFile(fileName) {
             axios.get(`/event/files/${fileName}/copy`)
@@ -95,14 +125,12 @@ export default {
         },
         decryptData() {
             this.isLoading = true;
-            console.log(this.selectedId)
-            axios.get(`/event/messages/${this.selectedId}/`)
+            axios.get(`/event/files/${this.url}/messages/${this.selectedId}/`)
                 .then(response => {
                     if (response.data.error) {
                         this.error = response.data.error.status;
                     } else {
-                        this.decrypted.original_data = response.data.original_data;
-                        this.decrypted.new_data = response.data.new_data;
+                        this.decrypted.name = response.data.name;
                     }
                 })
                 .catch(error => {
