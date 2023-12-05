@@ -13,6 +13,10 @@
             <div class="text-zinc-900 dark:text-zinc-100">{{ event.name }}</div>
         </div>
         <div class="flex items-center">
+            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">Email:</div>
+            <div class="text-zinc-900 dark:text-zinc-100">{{ event.user_email }}</div>
+        </div>
+        <div class="flex items-center">
             <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">IP Address:</div>
             <div class="text-zinc-900 dark:text-zinc-100">{{ event.ip_address }}</div>
         </div>
@@ -43,9 +47,6 @@ import { formatDate } from '@/Utils/index.js';
 export default {
     props: {
         event: Object
-    },
-    mounted() {
-        console.log(this.event)
     },
     methods: {
         formatDate,

@@ -29,7 +29,7 @@ export default {
         DangerButton
     },
     props: {
-        error: String,
+        error: String | Object,
         isLoading: Boolean,
         hasDelete: Boolean,
         hasDecrypt: Boolean

@@ -49,9 +49,11 @@ export default {
             selectedId: '',
             decrypted: {
                 name: null,
+                email: null
             },
             encrypted: {
                 name: null,
+                email: null
             },
         }
 
@@ -82,6 +84,7 @@ export default {
 
             if (this.decrypted.name) {
                 message.name = this.decrypted.name;
+                message.user_email = this.decrypted.email;
             }
 
             return message;
@@ -97,7 +100,8 @@ export default {
             const message = this.getSelectedMessage();
 
             this.encrypted = {
-                name: message.name
+                name: message.name,
+                email: message.user_email
             };
         },
         hideDetails() {
@@ -109,6 +113,12 @@ export default {
                 this.decrypted.name = null;
             }
 
+            if (this.decrypted.email) {
+                message.user_email = this.encrypted.email;
+                this.decrypted.email = null;
+            }
+
+            this.error = '';
         },
         backupFile(fileName) {
             axios.get(`/event/files/${fileName}/copy`)
@@ -131,6 +141,7 @@ export default {
                         this.error = response.data.error.status;
                     } else {
                         this.decrypted.name = response.data.name;
+                        this.decrypted.email = response.data.user_email;
                     }
                 })
                 .catch(error => {

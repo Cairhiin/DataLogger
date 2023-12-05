@@ -118,6 +118,8 @@ export default {
                 log.new_data = this.encrypted.new_data;
                 this.decrypted.new_data = null;
             }
+
+            this.error = '';
         },
         decryptData() {
             this.isLoading = true;

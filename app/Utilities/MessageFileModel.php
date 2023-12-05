@@ -23,7 +23,6 @@ class MessageFileModel extends FileModel
 
     static public $encrypted = [
         "app_id",
-        "user_email",
         "ip_address"
     ];
 

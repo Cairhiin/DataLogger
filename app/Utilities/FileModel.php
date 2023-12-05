@@ -28,15 +28,16 @@ class FileModel
 
     public function get($id)
     {
-        $this->results = array_filter($this->results, function ($result) use ($id) {
-            return $id === $result->id;
+        $results = array_filter($this->results, function ($result) use ($id) {
+            return $id == $result->id;
         });
 
         $result = new \stdClass;
 
-        if (!empty($this->results)) {
-            $result = $this->results[0];
+        if (!empty($results)) {
+            $result = reset($results);
             $result->name = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->name);
+            $result->user_email = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->user_email);
         }
 
         return $result;
