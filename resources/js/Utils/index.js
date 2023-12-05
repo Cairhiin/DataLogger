@@ -13,5 +13,5 @@ export function formatDate(d) {
     const seconds =
         time.getSeconds() < 10 ? `0${time.getSeconds()}` : time.getSeconds();
 
-    return `${date} (${hours}:${minutes}:${seconds})`;
+    return `${hours}:${minutes}:${seconds}`;
 }

@@ -6,10 +6,10 @@
             </h2>
         </template>
         <div>
-            <div class="grid grid-cols-5 items-center gap-8 p-2 font-bold rounded-t
+            <div class="grid grid-cols-4 items-center gap-8 p-2 font-bold rounded-t
             bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900">
-                <div class="col-span-2">Date</div>
-                <div>Data</div>
+                <div>Time</div>
+                <div>IP</div>
                 <div>Route</div>
                 <div>Application ID</div>
             </div>
