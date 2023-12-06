@@ -21,15 +21,18 @@ class MessageFileModel extends FileModel
         "user"
     ];
 
+    // Ecnrypted fields
     static public $encrypted = [
         "app_id",
         "ip_address"
     ];
 
+    // Super Admin access overwrites the customer id
     static public $access = [
         "Super Admin",
         "Admin"
     ];
 
+    // Customer id to identify which messages belong to a certain customer
     static public $identifier = "user_id";
 }

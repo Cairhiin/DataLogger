@@ -64,7 +64,7 @@ class FileModel
         $date = $data["date"];
 
         // Skip this data if the user is not an admin and the email doesn't match
-        if (!$this->hasAccess && array_key_exists("user_id", $content) && request()->user()->id != $content["user_id"]) {
+        if (!$this->hasAccess && array_key_exists($this->customerIdentifier, $content) && request()->user()->id != $content[$this->customerIdentifier]) {
             return;
         } else {
             $content["user"] = User::find($content["user_id"]);
