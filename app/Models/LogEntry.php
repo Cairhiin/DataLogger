@@ -19,7 +19,6 @@ class LogEntry extends Model
         'original_data',
         'new_data',
         'app_id',
-        'user_email',
         'route',
         'ip_address',
         'user_id'
@@ -28,7 +27,6 @@ class LogEntry extends Model
     protected $decryptable = [
         'original_data',
         'new_data',
-        'user_email',
         'ip_address'
     ];
 

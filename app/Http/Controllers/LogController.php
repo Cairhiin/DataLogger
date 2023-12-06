@@ -42,7 +42,6 @@ class LogController extends Controller
             'app_id' => $request->app_id ? Encryption::encryptUsingKey($enc_key, $request->app_id) : Encryption::encryptUsingKey($enc_key, 'Default'),
             'event_type' => $request->event_type ?? '',
             'route' => $request->route ?? '',
-            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
             'user_id' => $request->user()->id
         ];
@@ -58,7 +57,7 @@ class LogController extends Controller
         $logs = LogEntry::query()
             ->when($user->role->name == "member", function ($query) use ($user) {
                 // If the user is just a member only show results that are theirs
-                return $query->where('user_email', Encryption::encryptUsingKey($user->encryption_key, $user->email));
+                return $query->where('user_id', $user->id);
             })
             ->when($request->model, function ($query) use ($request) {
                 return $query->where('model', '=', $request->model);
@@ -98,6 +97,7 @@ class LogController extends Controller
         foreach ($logs as $log) {
             $log->app_id = Encryption::decryptUsingKey($enc_key, $log->app_id);
             $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
+            $log->user;
         }
 
         return Inertia::render('Event/Logs', [

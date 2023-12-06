@@ -9,12 +9,8 @@
             <div class="text-zinc-900 dark:text-zinc-100">{{ formatDate(event.created_at) }}</div>
         </div>
         <div class="flex items-center">
-            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">User:</div>
-            <div class="text-zinc-900 dark:text-zinc-100">{{ event.name }}</div>
-        </div>
-        <div class="flex items-center">
-            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">Email:</div>
-            <div class="text-zinc-900 dark:text-zinc-100">{{ event.user_email }}</div>
+            <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">Account:</div>
+            <div class="text-zinc-900 dark:text-zinc-100">{{ event.user.name }}</div>
         </div>
         <div class="flex items-center">
             <div class="w-32 text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">IP Address:</div>

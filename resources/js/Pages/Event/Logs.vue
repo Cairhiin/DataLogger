@@ -101,7 +101,7 @@ export default {
             const log = this.getSelectedLog();
             this.encrypted = {
                 original_data: log.original_data,
-                new_data: log.new_data
+                new_data: log.new_data,
             };
         },
         hideDetails() {
