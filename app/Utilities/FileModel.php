@@ -2,6 +2,8 @@
 
 namespace App\Utilities;
 
+use App\Models\User;
+
 class FileModel
 {
     private array $attributes;
@@ -36,8 +38,8 @@ class FileModel
 
         if (!empty($results)) {
             $result = reset($results);
-            $result->name = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->name);
-            $result->user_email = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->user_email);
+            //$result->name = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->name);
+            //$result->user_email = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->user_email);
         }
 
         return $result;
@@ -62,8 +64,10 @@ class FileModel
         $date = $data["date"];
 
         // Skip this data if the user is not an admin and the email doesn't match
-        if (!$this->hasAccess && array_key_exists("user", $content) && request()->user()->id != $content["user"]) {
+        if (!$this->hasAccess && array_key_exists("user_id", $content) && request()->user()->id != $content["user_id"]) {
             return;
+        } else {
+            $content["user"] = User::find($content["user_id"]);
         }
 
         // Assign the attributes to the result object and decrypt those that need decrypting

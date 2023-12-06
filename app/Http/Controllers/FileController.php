@@ -31,18 +31,14 @@ class FileController extends Controller
         $validated = $request->validate([
             'app_id' => 'required',
             'route' => 'required',
-            'name' => 'required',
-            'user_email' => 'required|email',
             'ip' => 'required'
         ]);
 
         $message = [
             'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
             'route' => $request->route,
-            'name' => Encryption::encryptUsingKey($enc_key, $request->name),
-            'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
-            'user' => $request->user()->id
+            'user_id' => $request->user()->id
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream

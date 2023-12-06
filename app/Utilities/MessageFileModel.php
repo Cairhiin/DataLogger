@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Models\Role;
+use App\Models\User;
 
 class MessageFileModel extends FileModel
 {
@@ -16,9 +17,8 @@ class MessageFileModel extends FileModel
         "app_id",
         "ip_address",
         "route",
-        "user_email",
-        "user",
-        "name"
+        "user_id",
+        "user"
     ];
 
     static public $encrypted = [
@@ -31,5 +31,5 @@ class MessageFileModel extends FileModel
         "Admin"
     ];
 
-    static public $identifier = "user_email";
+    static public $identifier = "user_id";
 }
