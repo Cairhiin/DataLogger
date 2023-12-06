@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LogEntry extends Model
 {
@@ -20,6 +22,7 @@ class LogEntry extends Model
         'user_email',
         'route',
         'ip_address',
+        'user_id'
     ];
 
     protected $decryptable = [
@@ -28,4 +31,12 @@ class LogEntry extends Model
         'user_email',
         'ip_address'
     ];
+
+    /**
+     * Get the user that owns the entry.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

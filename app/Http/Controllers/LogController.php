@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LogController extends Controller
@@ -23,32 +22,29 @@ class LogController extends Controller
             return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
         }
 
-        if ($enc_key == '') {
-            return ["Status" => "Error", "Message" => "No encryption key set!"];
+        if ($enc_key == '' || $enc_key == null) {
+            $enc_key = Encryption::createPersonalKey();
+            $user = $request->user();
+            $user->encryption_key = $enc_key;
+            $user->save();
         }
 
         // Validate the request before encrypting it
         $validated = $request->validate([
             'original_data' => 'required',
             'new_data' => 'required',
-            'app_id' => 'required',
-            'model' => 'required',
-            'route' => 'required',
-            'event_type' => 'required',
-            'user_email' => 'required|email',
-            'ip' => 'required'
         ]);
 
         $log = [
-            'model' => $request->model,
+            'model' => $request->model ?? 'Unspecified',
             'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
             'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
-            'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
-            'event_type' => $request->event_type,
-            'route' => $request->route,
+            'app_id' => $request->app_id ? Encryption::encryptUsingKey($enc_key, $request->app_id) : Encryption::encryptUsingKey($enc_key, 'Default'),
+            'event_type' => $request->event_type ?? '',
+            'route' => $request->route ?? '',
             'user_email' => Encryption::encryptUsingKey($enc_key, $request->user_email),
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
-            'user' => $request->user()->id
+            'user_id' => $request->user()->id
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream

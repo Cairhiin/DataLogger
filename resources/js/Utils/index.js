@@ -1,4 +1,4 @@
-export function formatDate(d) {
+export function formatDate(d, type) {
     const time = new Date(new Date(d).getTime());
     const date = new Date(d).toLocaleDateString("nl-NL", {
         day: "numeric",
@@ -13,5 +13,7 @@ export function formatDate(d) {
     const seconds =
         time.getSeconds() < 10 ? `0${time.getSeconds()}` : time.getSeconds();
 
-    return `${hours}:${minutes}:${seconds}`;
+    if (type === "date") return `${hours}:${minutes}:${seconds}`;
+
+    return `${date} (${hours}:${minutes}:${seconds})`;
 }

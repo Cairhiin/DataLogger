@@ -34,11 +34,11 @@
         </div>
         <div v-if="event.new_data" class="grid grid-cols-5 items-center">
             <div class="text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">Updated Data:</div>
-            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ formatData(event.new_data) }}</div>
+            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ event.new_data }}</div>
         </div>
         <div v-if="event.original_data" class="grid grid-cols-5 items-center">
             <div class="text-sm font-bold dark:text-zinc-400 text-zinc-500 uppercase">Old Data:</div>
-            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ formatData(event.original_data) }}</div>
+            <div class="col-span-4 text-zinc-900 dark:text-zinc-100 truncate">{{ event.original_data }}</div>
         </div>
     </div>
 </template>
@@ -50,10 +50,10 @@ export default {
     },
     methods: {
         formatDate,
-        formatData(data) {
+        /* formatData(data) {
             const d = Object.keys(data);
             return d.reduce((sum, key, index, d) => sum + `${key}: ${data[key]}${index < d.length - 1 ? ', ' : ''}`, '');
-        }
+        } */
     },
 
 }

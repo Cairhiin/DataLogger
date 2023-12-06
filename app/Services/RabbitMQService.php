@@ -18,9 +18,11 @@ class RabbitMQService
         $channel->queue_declare(env('MQ_QUEUE'), false, true, false, false);
         $channel->queue_bind(env('MQ_QUEUE'), env('MQ_EXCHANGE'), $key);
 
-        $message = unserialize($message);
-        $message += array('id' => Str::orderedUuid()->toString());
-        $message = serialize($message);
+        if ($key == 'url') {
+            $message = unserialize($message);
+            $message += array('id' => Str::orderedUuid()->toString());
+            $message = serialize($message);
+        }
 
         $msg = new AMQPMessage($message);
         $channel->basic_publish($msg, env('MQ_EXCHANGE'), $key);
