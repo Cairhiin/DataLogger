@@ -15,9 +15,7 @@ class LogController extends Controller
         $enc_key = '';
 
         // Check if the user is allowed to create new log entries
-        if ($request->user()->tokenCan('log:create')) {
-            $enc_key = $this->getEncryptionKey($request);
-        } else {
+        if (!$request->user()->tokenCan('log:create')) {
             return ["Status" => "Error", "Message" => "Not allowed to create new log events!"];
         }
 
@@ -26,6 +24,8 @@ class LogController extends Controller
             'original_data' => 'string|nullable',
             'new_data' => 'string|nullable',
         ]);
+
+        $enc_key = $this->getEncryptionKey($request);
 
         $log = [
             'model' => $request->model ?? 'Unspecified',
@@ -67,16 +67,7 @@ class LogController extends Controller
             ->orderBy('date', 'DESC')
             ->paginate(15);
 
-        try {
-            $enc_key = $this->getEncryptionKey($request);
-        } catch (Throwable $e) {
-            return Inertia::render('Error', [
-                'error' => ["status" => "404 Not Found", "message" => [
-                    "header" => "The requested resources was not found!",
-                    "info" => "There appears to be a problem with your user account."
-                ]],
-            ]);
-        }
+        $enc_key = $this->getEncryptionKey($request);
 
         foreach ($logs as $log) {
             $log->app_id = Encryption::decryptUsingKey($enc_key, $log->app_id);
@@ -92,17 +83,6 @@ class LogController extends Controller
     public function show(Request $request)
     {
         try {
-            $enc_key = $this->getEncryptionKey($request);
-        } catch (Throwable $e) {
-            return [
-                'error' => ["status" => "404 Not Found", "message" => [
-                    "header" => "The requested resources was not found!",
-                    "info" => "There appears to be a problem with your user account."
-                ]],
-            ];
-        }
-
-        try {
             $log = LogEntry::findOrFail($request->id);
         } catch (Throwable $e) {
             return  [
@@ -112,6 +92,8 @@ class LogController extends Controller
                 ]]
             ];
         }
+
+        $enc_key = $this->getEncryptionKey($request);
 
         $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
         $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
@@ -174,16 +156,7 @@ class LogController extends Controller
                 ->orderBy('date', 'DESC')
                 ->paginate(15);
 
-            try {
-                $enc_key = $this->getEncryptionKey($request);
-            } catch (Throwable $e) {
-                return Inertia::render('Error', [
-                    'error' => ["status" => "404 Not Found", "message" => [
-                        "header" => "The requested resources was not found!",
-                        "info" => "There appears to be a problem with your user account."
-                    ]],
-                ]);
-            }
+            $enc_key = $this->getEncryptionKey($request);
 
             foreach ($logs as $log) {
                 $log->app_id = Encryption::decryptUsingKey($enc_key, $log->app_id);

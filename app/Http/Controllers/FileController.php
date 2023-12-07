@@ -14,25 +14,14 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
-        $enc_key = "";
-
-        // Check if the user is allowed to create new log entries
-        if ($request->user()->tokenCan('message:create')) {
-            $enc_key = $request->user()->encryption_key;
-        } else {
-            return ["Status" => "Error", "Message" => "Not allowed to create new message events!"];
-        }
-
-        if ($enc_key == '' || $enc_key == null) {
-            return ["Status" => "Error", "Message" => "No encryption key set!"];
-        }
-
         // Validate the request before encrypting it
         $validated = $request->validate([
             'app_id' => 'required',
             'route' => 'required',
             'ip' => 'required'
         ]);
+
+        $enc_key = $this->getEncryptionKey($request);
 
         $message = [
             'app_id' => Encryption::encryptUsingKey($enc_key, $request->app_id),
