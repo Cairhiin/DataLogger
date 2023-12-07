@@ -16,6 +16,13 @@
             <event-list :events="logsList.data" @show-details="showDetails" />
         </div>
         <pagination :links="logsList.links" />
+        <div class="mt-6 dark:bg-zinc-800/25 bg-zinc-100 rounded">
+            <h3 class="text-lg uppercase font-heading font-bold bg-zinc-300/25 dark:bg-zinc-700/25 px-4 py-2 rounded-t
+        text-zinc-600 dark:text-zinc-400">Enter time frame</h3>
+            <div class="p-4">
+                <vue-date-picker v-model="date" range multi-calendars @closed="getLogsInRange" />
+            </div>
+        </div>
         <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" :routes="routes" :apps="apps"
             :models="models" />
         <modal :show="modalIsShowing">
@@ -39,10 +46,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import EventModalContent from '@/Components/Events/EventModalContent.vue';
 import EventFilterForm from '@/Components/Events/EventFilterForm.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
     data() {
         return {
+            date: null,
             decrypted: {
                 original_data: null,
                 new_data: null
@@ -75,8 +85,25 @@ export default {
         EventModalContent,
         EventFilterForm,
         AppLayout,
+        VueDatePicker
     },
     computed: {
+        getLogsInRange() {
+            if (this.date) {
+                this.isLoading = true;
+                const from = `${this.date[0].getFullYear()}-${this.date[0].getMonth() + 1}-${this.date[0].getDate()}`;
+                const to = `${this.date[1].getFullYear()}-${this.date[1].getMonth() + 1}-${this.date[1].getDate()}`;
+
+                axios.get(`/event/logs/from/${from}/to/${to}`)
+                    .then(res => {
+                        if (!res.error) {
+                            this.logsList = res.data;
+                        }
+                    })
+                    .catch(err => console.error(err))
+                    .finally(this.isLoading = false);
+            }
+        },
         modalContent() {
             const log = this.getSelectedLog();
 

@@ -2,9 +2,6 @@
 
 namespace App\Utilities;
 
-use App\Models\Role;
-use App\Models\User;
-
 class MessageFileModel extends FileModel
 {
     function __construct($file)

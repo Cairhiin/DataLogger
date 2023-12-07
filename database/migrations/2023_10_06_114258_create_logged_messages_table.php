@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('route');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('ip_address');
+            $table->timestamp('date')->useCurrent();
             $table->timestamps();
         });
     }

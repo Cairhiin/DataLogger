@@ -17,12 +17,16 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
+        <div>
+            <h3>Enter time frame</h3>
+            <vue-date-picker />
+        </div>
         <event-filter-form :events="messages" @onSubmit="onSubmit" @onReset="onReset" :routes="uniqueValues.route"
             :apps="uniqueValues.app_id" :models="uniqueValues.model" />
         <modal :show="modalIsShowing">
             <event-details :event="modalContent" />
-            <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails"
-                @decrypt-data="decryptData" :hasDecrypt="true" :hasDelete="false" />
+            <event-modal-content :error="error" :isLoading="isLoading" @hide-details="hideDetails" :hasDecrypt="false"
+                :hasDelete="false" />
         </modal>
     </app-layout>
 </template>
@@ -38,6 +42,8 @@ import Modal from '@/Components/Modal.vue';
 import LogFileList from '@/Components/Events/LogFileList.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import axios from 'axios';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
     data() {
@@ -47,14 +53,6 @@ export default {
             error: '',
             isLoading: false,
             selectedId: '',
-            decrypted: {
-                name: null,
-                email: null
-            },
-            encrypted: {
-                name: null,
-                email: null
-            },
         }
 
     },
@@ -69,7 +67,8 @@ export default {
         Pagination,
         Modal,
         LogFileList,
-        AppLayout
+        AppLayout,
+        VueDatePicker
     },
     props: {
         messages: Array,
@@ -80,14 +79,7 @@ export default {
     },
     computed: {
         modalContent() {
-            const message = this.getSelectedMessage();
-
-            if (this.decrypted.name) {
-                message.name = this.decrypted.name;
-                message.user_email = this.decrypted.email;
-            }
-
-            return message;
+            return this.getSelectedMessage();
         },
     },
     methods: {
@@ -98,29 +90,14 @@ export default {
             this.selectedId = id;
             this.modalIsShowing = true;
             const message = this.getSelectedMessage();
-
-            this.encrypted = {
-                name: message.name,
-                email: message.user_email
-            };
         },
         hideDetails() {
             this.modalIsShowing = false;
             const message = this.getSelectedMessage();
-
-            if (this.decrypted.name) {
-                message.name = this.encrypted.name;
-                this.decrypted.name = null;
-            }
-
-            if (this.decrypted.email) {
-                message.user_email = this.encrypted.email;
-                this.decrypted.email = null;
-            }
-
             this.error = '';
         },
         backupFile(fileName) {
+            this.error = '';
             axios.get(`/event/files/${fileName}/copy`)
                 .then(response => {
                     if (response.data.status === 'Error') {
@@ -133,29 +110,12 @@ export default {
                     this.error = error;
                 });
         },
-        decryptData() {
-            this.isLoading = true;
-            axios.get(`/event/files/${this.url}/messages/${this.selectedId}/`)
-                .then(response => {
-                    if (response.data.error) {
-                        this.error = response.data.error.status;
-                    } else {
-                        this.decrypted.name = response.data.name;
-                        this.decrypted.email = response.data.user_email;
-                    }
-                })
-                .catch(error => {
-                    this.error = error;
-                })
-                .finally(() => {
-                    this.isLoading = false;
-                });
-        },
         deleteFile(fileName) {
             if (!confirm("Are you certain you want to delete this log? It cannot be undone!")) {
                 return false;
             }
 
+            this.error = '';
             axios.delete(`/event/files/${fileName}/`)
                 .then(response => {
                     if (response.data.status === 'Error') {

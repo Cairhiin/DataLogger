@@ -43,6 +43,7 @@ Route::middleware([
 Route::prefix('event')->middleware('auth:sanctum')->group(function () {
     // Database events routes
     Route::get('/logs', [LogController::class, 'index'])->name('event.logs.index');
+    Route::get('/logs/from/{from}/to/{to}', [LogController::class, 'indexByDateRange'])->name('event.logs.date.index');
 
     // Routes to get a list of unique route, model and app names
     Route::get('/logs/routes', [LogRouteController::class, 'index'])->name('event.logs.routes.index');
