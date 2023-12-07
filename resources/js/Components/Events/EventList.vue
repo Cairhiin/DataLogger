@@ -1,4 +1,5 @@
 <template>
+    <div v-if="events.length === 0" class="p-2 bg-sky-500/25">No events found!</div>
     <div v-for="(log, index) in events" :key="log.id" @click="$emit('showDetails', log.id)" class="grid grid-cols-4 items-center gap-8 p-2 border-b
                 odd:bg-sky-500/25 even:bg-sky-400/25 border-sky-200 hover:bg-sky-300/75
                 dark:odd:bg-slate-900/75 dark:even:bg-slate-900/25

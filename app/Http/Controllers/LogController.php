@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Throwable;
-use App\Models\User;
 use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
@@ -24,19 +23,20 @@ class LogController extends Controller
 
         // Validate the request before encrypting it
         $validated = $request->validate([
-            'original_data' => 'required',
-            'new_data' => 'required',
+            'original_data' => 'string|nullable',
+            'new_data' => 'string|nullable',
         ]);
 
         $log = [
             'model' => $request->model ?? 'Unspecified',
-            'original_data' => Encryption::encryptUsingKey($enc_key, serialize($request->original_data)),
-            'new_data' => Encryption::encryptUsingKey($enc_key, serialize($request->new_data)),
+            'original_data' => $request->original_data ? Encryption::encryptUsingKey($enc_key, serialize($request->original_data)) : null,
+            'new_data' => $request->new_data ? Encryption::encryptUsingKey($enc_key, serialize($request->new_data)) : null,
             'app_id' => $request->app_id ? Encryption::encryptUsingKey($enc_key, $request->app_id) : Encryption::encryptUsingKey($enc_key, 'Default'),
             'event_type' => $request->event_type ?? '',
             'route' => $request->route ?? '',
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
+            'date' => $request->date
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream

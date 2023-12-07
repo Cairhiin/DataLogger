@@ -20,7 +20,7 @@
             <h3 class="text-lg uppercase font-heading font-bold bg-zinc-300/25 dark:bg-zinc-700/25 px-4 py-2 rounded-t
         text-zinc-600 dark:text-zinc-400">Enter time frame</h3>
             <div class="p-4">
-                <vue-date-picker v-model="date" range multi-calendars @closed="getLogsInRange" />
+                <vue-date-picker v-model="date" range @closed="getLogsInRange" />
             </div>
         </div>
         <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" :routes="routes" :apps="apps"
