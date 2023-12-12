@@ -21,6 +21,7 @@ class LogEntry extends Model
         'app_id',
         'route',
         'ip_address',
+        'date',
         'user_id'
     ];
 

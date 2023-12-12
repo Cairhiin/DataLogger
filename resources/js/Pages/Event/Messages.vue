@@ -17,10 +17,6 @@
             <event-list :events="messages" @show-details="showDetails" />
         </div>
         <pagination :links="links" />
-        <div>
-            <h3>Enter time frame</h3>
-            <vue-date-picker />
-        </div>
         <event-filter-form :events="messages" @onSubmit="onSubmit" @onReset="onReset" :routes="uniqueValues.route"
             :apps="uniqueValues.app_id" :models="uniqueValues.model" />
         <modal :show="modalIsShowing">
@@ -42,8 +38,6 @@ import Modal from '@/Components/Modal.vue';
 import LogFileList from '@/Components/Events/LogFileList.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import axios from 'axios';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
     data() {
@@ -67,8 +61,7 @@ export default {
         Pagination,
         Modal,
         LogFileList,
-        AppLayout,
-        VueDatePicker
+        AppLayout
     },
     props: {
         messages: Array,
