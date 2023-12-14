@@ -30,8 +30,8 @@ class LogController extends Controller
 
         $log = [
             'model' => $request->model ?? 'Unspecified',
-            'original_data' => $request->original_data ? Encryption::encryptUsingKey($enc_key, serialize($request->original_data)) : null,
-            'new_data' => $request->new_data ? Encryption::encryptUsingKey($enc_key, serialize($request->new_data)) : null,
+            'original_data' => $request->original_data ? Encryption::encryptUsingKey($enc_key, $request->original_data) : null,
+            'new_data' => $request->new_data ? Encryption::encryptUsingKey($enc_key, $request->new_data) : null,
             'app_id' => $request->app_id ? Encryption::encryptUsingKey($enc_key, $request->app_id) : Encryption::encryptUsingKey($enc_key, 'Default'),
             'event_type' => $request->event_type ?? '',
             'route' => $request->route ?? '',
