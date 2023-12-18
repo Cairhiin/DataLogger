@@ -99,6 +99,11 @@ class FileModel
         return $this;
     }
 
+    public function getRecords($amount)
+    {
+        return array_slice($this->results, 0, $amount);
+    }
+
     public function numberOfRecords()
     {
         return !empty($this->results) ? count($this->results) : count($this->file);

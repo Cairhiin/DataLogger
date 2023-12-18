@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\LogEntry;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use Illuminate\Support\Carbon;
 
 class LogController extends Controller
 {

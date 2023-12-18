@@ -13,7 +13,8 @@ export function formatDate(d, type) {
     const seconds =
         time.getSeconds() < 10 ? `0${time.getSeconds()}` : time.getSeconds();
 
-    if (type === "date") return `${hours}:${minutes}:${seconds}`;
+    if (type === "time") return `${hours}:${minutes}:${seconds}`;
+    if (type === "date") return date;
 
     return `${date} (${hours}:${minutes}:${seconds})`;
 }
