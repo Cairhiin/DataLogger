@@ -22,7 +22,8 @@ class LogEntry extends Model
         'route',
         'ip_address',
         'date',
-        'user_id'
+        'user_id',
+        'remote_user_id'
     ];
 
     protected $decryptable = [

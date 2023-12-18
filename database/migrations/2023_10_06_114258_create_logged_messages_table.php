@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('new_data')->nullable();
             $table->text('app_id');
             $table->string('route');
+            $table->string('remote_user_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('ip_address');
             $table->timestamp('date')->useCurrent();

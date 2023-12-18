@@ -26,7 +26,7 @@
         <event-filter-form :events="logsList.data" @onSubmit="onSubmit" @onReset="onReset" :routes="routes" :apps="apps"
             :models="models" />
         <modal :show="modalIsShowing">
-            <event-details :event="modalContent" />
+            <event-details :event="modalContent" :isDecrypted="isDecrypted" />
             <event-modal-content :error="error" :isLoading="isLoading" @decrypt-data="decryptData"
                 @hide-details="hideDetails" @delete-log="deleteLog" :hasDecrypt="true" :hasDelete="true" />
         </modal>
@@ -88,6 +88,9 @@ export default {
         VueDatePicker
     },
     computed: {
+        isDecrypted() {
+            return this.decrypted.original_data !== null || this.decrypted.new_data !== null;
+        },
         getLogsInRange() {
             if (this.date) {
                 this.isLoading = true;
