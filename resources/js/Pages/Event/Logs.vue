@@ -189,12 +189,12 @@ export default {
                     this.error = error;
                 }).finally(() => {
                     if (this.decrypted.original_data) {
-                        log.original_data = this.encrypted.original_data;
+                        this.log.original_data = this.encrypted.original_data;
                         this.decrypted.original_data = null;
                     }
 
                     if (this.decrypted.new_data) {
-                        log.new_data = this.encrypted.new_data;
+                        this.log.new_data = this.encrypted.new_data;
                         this.decrypted.new_data = null;
                     }
                 });
