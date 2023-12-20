@@ -12,7 +12,7 @@ class FileModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_file_model_records_all(): void
+    public function test_file_model_records_count(): void
     {
         $user = User::factory()->create();
         $user->id = 4;
@@ -41,9 +41,13 @@ class FileModelTest extends TestCase
         });
 
         $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
-        $this->assertTrue($messageFileModel->all()->get(1) == new stdClass());
+
+        $messageEvent = $messageFileModel->all()->get('1');
+        $this->assertFalse(property_exists($messageEvent, 'id'));
+        $this->assertTrue($messageEvent == new stdClass());
 
         $messageEvent = $messageFileModel->all()->get('9ac8b91c-9747-435e-9384-50ba010f3bb8');
+        $this->assertTrue(property_exists($messageEvent, 'id'));
         $this->assertTrue($messageEvent->id == '9ac8b91c-9747-435e-9384-50ba010f3bb8');
     }
 
@@ -63,19 +67,30 @@ class FileModelTest extends TestCase
         $this->assertTrue($messageEvent->user_id == "4");
     }
 
-    public function test_file_model_records_user_id(): void
+    public function test_file_model_records_access_levels(): void
     {
         $user = User::factory()->create();
         $user->id = 4;
+        $user->role->name = "Admin";
 
         request()->setUserResolver(function () use ($user) {
             return $user;
         });
 
         $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
-        $messageEvent = $messageFileModel->all()->get('9ac8b91c-9747-435e-9384-50ba010f3bb8');
+        $messageEvent = $messageFileModel->all()->get('9ac8b91f-ca30-4789-b196-aa838e3a68dd');
+        $this->assertTrue(property_exists($messageEvent, 'id'));
+        $this->assertTrue($messageEvent->id == '9ac8b91f-ca30-4789-b196-aa838e3a68dd');
 
-        $this->assertTrue($messageEvent->route == "client.profile.show");
-        $this->assertTrue($messageEvent->user_id == "4");
+        $user->role->name = "Member";
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $messageEvent = $messageFileModel->all()->get('9ac8b91f-ca30-4789-b196-aa838e3a68dd');
+        $this->assertFalse(property_exists($messageEvent, 'id'));
+
+        $user->role->name = "Super Admin";
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $messageEvent = $messageFileModel->all()->get('9ac8b91f-ca30-4789-b196-aa838e3a68dd');
+        $this->assertTrue(property_exists($messageEvent, 'id'));
+        $this->assertTrue($messageEvent->id == '9ac8b91f-ca30-4789-b196-aa838e3a68dd');
     }
 }
