@@ -93,4 +93,60 @@ class FileModelTest extends TestCase
         $this->assertTrue(property_exists($messageEvent, 'id'));
         $this->assertTrue($messageEvent->id == '9ac8b91f-ca30-4789-b196-aa838e3a68dd');
     }
+
+    public function test_file_model_records_pagination(): void
+    {
+        $user = User::factory()->create();
+        $user->id = 4;
+
+        request()->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $messageEvents = $messageFileModel->all()->paginate(5);
+        $this->assertCount(5, $messageEvents["messages"]);
+        $this->assertCount(4, $messageEvents["links"]);
+
+        $messageEvents = $messageFileModel->all()->paginate(3);
+        $this->assertCount(3, $messageEvents["messages"]);
+        $this->assertCount(4, $messageEvents["links"]);
+
+        $messageEvents = $messageFileModel->all()->paginate();
+        $this->assertCount(6, $messageEvents["messages"]);
+        $this->assertCount(3, $messageEvents["links"]);
+    }
+
+    public function test_file_model_records_get_number(): void
+    {
+        $user = User::factory()->create();
+        $user->id = 4;
+
+        request()->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $this->assertCount(5, $messageFileModel->all()->getRecords(5));
+        $this->assertCount(6, $messageFileModel->all()->getRecords(0));
+        $this->assertCount(6, $messageFileModel->all()->getRecords());
+    }
+
+    public function test_file_model_records_order_by(): void
+    {
+        $user = User::factory()->create();
+        $user->id = 4;
+
+        request()->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+
+        $messageEvents = $messageFileModel->all()->orderBy('route', 'asc')->getRecords();
+        $this->assertTrue($messageEvents[0]->id == '9ac8b91f-2061-4b4a-a351-d43e1de4ff18');
+
+        $messageEvents = $messageFileModel->all()->orderBy('route', 'desc')->getRecords();
+        $this->assertTrue($messageEvents[0]->id == '9ac8b91e-68c4-4a6f-82c2-23384ff2b66e');
+    }
 }

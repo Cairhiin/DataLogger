@@ -100,9 +100,9 @@ class FileModel
         return $this;
     }
 
-    public function getRecords($amount)
+    public function getRecords($amount = null)
     {
-        return array_slice($this->results, 0, $amount);
+        return $amount ? array_slice($this->results, 0, $amount) : $this->results;
     }
 
     public function numberOfRecords()
@@ -146,7 +146,7 @@ class FileModel
     public function orderBy($attribute, $direction)
     {
         usort($this->results, function ($a, $b) use ($attribute, $direction) {
-            if ($direction == 'ASC') {
+            if (strtoupper($direction) == 'ASC') {
                 return strcmp($a->$attribute, $b->$attribute);
             } else {
                 return strcmp($b->$attribute, $a->$attribute);
