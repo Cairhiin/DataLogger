@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use Throwable;
 use Inertia\Inertia;
 use App\Models\LogEntry;
@@ -87,20 +88,14 @@ class LogController extends Controller
     {
         try {
             $log = LogEntry::findOrFail($request->id);
-        } catch (Throwable $e) {
-            return  [
-                'error' => ["status" => "404 Not Found", "message" => [
-                    "header" => "The requested resource was not found!",
-                    "info" => "There appears to be a problem finding the requested resource."
-                ]]
-            ];
+            $enc_key = $this->getEncryptionKey($request);
+
+            $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
+            $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
+            $log->user;
+        } catch (CustomException $e) {
+            return  $e->render("There was an error retrieving the requested resource!");
         }
-
-        $enc_key = $this->getEncryptionKey($request);
-
-        $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
-        $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
-        $log->user;
 
         return $log;
     }
@@ -111,21 +106,11 @@ class LogController extends Controller
             try {
                 $log = LogEntry::findOrFail($request->id);
                 $log->forceDelete();
-            } catch (Throwable $e) {
-                return  [
-                    'error' => ["status" => "404 Not Found", "message" => [
-                        "header" => "The requested resource was not found!",
-                        "info" => "There appears to be a problem finding the requested resource."
-                    ]]
-                ];
+            } catch (CustomException $e) {
+                throw new CustomException("There was an error retrieving the requested resource!");
             }
         } else {
-            return  [
-                'error' => ["status" => "401 Unauthorized", "message" => [
-                    "header" => "You do not have permission to delete log entries!",
-                    "info" => "Please contact an administrator for more information."
-                ]]
-            ];
+            throw new CustomException("You are not authorized to make this request!");
         }
 
         return $request->id;
@@ -166,13 +151,8 @@ class LogController extends Controller
                 $log->ip_address = Encryption::decryptUsingKey($enc_key, $log->ip_address);
                 $log->user;
             }
-        } catch (Throwable $e) {
-            return  [
-                'error' => ["status" => "404 Not Found", "message" => [
-                    "header" => "The requested resource was not found!",
-                    "info" => "There appears to be a problem finding the requested resource."
-                ]]
-            ];
+        } catch (CustomException $e) {
+            throw new CustomException("The requested resource was not found!");
         }
 
         return $logs;

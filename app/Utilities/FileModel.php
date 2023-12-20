@@ -26,6 +26,7 @@ class FileModel
         $this->filename = basename($file);
         $this->filter = "";
         $this->filterValue = "";
+        $this->results = [];
     }
 
     public function get($id)
@@ -106,7 +107,7 @@ class FileModel
 
     public function numberOfRecords()
     {
-        return !empty($this->results) ? count($this->results) : count($this->file);
+        return count($this->results);
     }
 
     public function paginate($perPage = 15)
