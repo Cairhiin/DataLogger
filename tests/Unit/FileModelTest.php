@@ -149,4 +149,41 @@ class FileModelTest extends TestCase
         $messageEvents = $messageFileModel->all()->orderBy('route', 'desc')->getRecords();
         $this->assertTrue($messageEvents[0]->id == '9ac8b91e-68c4-4a6f-82c2-23384ff2b66e');
     }
+
+    public function test_file_model_records_filter_by(): void
+    {
+        $user = User::factory()->create();
+        $user->id = 4;
+
+        request()->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $messageEvents = $messageFileModel->all()->filterBy('route', 'client.profile.show')->getRecords();
+        $this->assertCount(1, $messageEvents);
+        $this->assertTrue(reset($messageEvents)->id == '9ac8b91c-9747-435e-9384-50ba010f3bb8');
+
+        $messageEvents = $messageFileModel->all()->filterBy('route', 'client.notifications.get')->getRecords();
+        $this->assertCount(1, $messageEvents);
+        $this->assertTrue(reset($messageEvents)->id == '9ac8b91f-ca30-4789-b196-aa838e3a68dc');
+    }
+
+    public function test_file_model_records_get_unique_values(): void
+    {
+        $user = User::factory()->create();
+        $user->id = 4;
+
+        request()->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        $messageFileModel = new MessageFileModel(storage_path('files/example.log'));
+        $this->assertTrue(count($messageFileModel->all()->getUniqueValues()["route"]) == 6);
+        $this->assertContains('client.notifications.get', $messageFileModel->all()->getUniqueValues()["route"]);
+        $this->assertTrue(count($messageFileModel->all()->getUniqueValues()["app_id"]) == 1);
+        $this->assertTrue(count($messageFileModel->all()->getUniqueValues()["ip_address"]) == 1);
+        $this->assertTrue(count($messageFileModel->all()->getUniqueValues()["id"]) == 6);
+        $this->assertContains('9ac8b91f-ca30-4789-b196-aa838e3a68dc', $messageFileModel->all()->getUniqueValues()["id"]);
+    }
 }
