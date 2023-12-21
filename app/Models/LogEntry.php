@@ -11,6 +11,8 @@ class LogEntry extends Model
 {
     use HasFactory;
 
+    const APP_ID = 'Unspecified';
+
     protected $table = 'logged_messages';
 
     protected $fillable = [
@@ -30,6 +32,10 @@ class LogEntry extends Model
         'original_data',
         'new_data',
         'ip_address'
+    ];
+
+    protected $attributes = [
+        'app_id' => self::APP_ID
     ];
 
     /**

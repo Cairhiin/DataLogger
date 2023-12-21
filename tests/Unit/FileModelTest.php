@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Utilities\MessageFileModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use stdClass;
 use Tests\TestCase;
 

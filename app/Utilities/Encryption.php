@@ -35,6 +35,7 @@ class Encryption
         return base64_encode($ciphertext);
     }
 
+
     /**
      * Decrypts the value of a resource based on the user's
      * decrypt key.
@@ -67,6 +68,30 @@ class Encryption
         );
 
         return $plaintext;
+    }
+    /**
+     * Encrypts the value of a resource based on the user's
+     * decrypt key.
+     *
+     * @param Object& $obj
+     * @param Int $user_id
+     * @return void
+     */
+    public static function encryptPersonalObject(&$obj, $user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        $reflectionClass = new \ReflectionClass(get_class($obj));
+        $fillables = $reflectionClass->getProperty("decryptable");
+        $fillables->setAccessible(true);
+        $attributes = $fillables->getValue($obj);
+
+        foreach ($attributes as $attribute) {
+            if ($obj->{$attribute} != null) {
+                $val = $obj->{$attribute};
+                $obj->{$attribute} =  Encryption::encryptUsingKey($user->encryption_key, $val);
+            }
+        }
     }
 
     /**
