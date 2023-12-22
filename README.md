@@ -55,7 +55,14 @@ ENC_KEY="ksdjsk2344wcjlwfhwfjhf34755wfwvt3g593n37nyc.lp02hou!234id#!aqp"
 ### Set Up the Database:
 
 Create a new database for your application.
-Update the .env file with your database credentials.
+Update the .env file with your database credentials. And add the following
+variables (update the links to the right location of the logger):
+
+```
+DATALOGGER_API_KEY={{ The API key you received }}
+DATALOGGER_API_URL_EVENTS_URL=http://localhost:8000/api/event/message
+DATALOGGER_API_DB_EVENTS_URL=http://localhost:8000/api/event/log
+```
 
 ### Run Migrations and Seeders:
 
@@ -89,9 +96,14 @@ that fires on every page load.
 $body =
     [
         "ip" => $ip,
+        "new_data" => $changed_data,
+        "original_data" => $original_data,
+        "date" => now(),
         "route" => $route,
+        "model" => $model,
+        "event_type" => "update" | "delete" | "create",
         "name" => $name,
-        "user_email" => $email,
+        "user_id" => Auth::user()->id,
         "app_id" => $app_id
     ];
 $token = env('DATA_LOGGER_API_KEY');
