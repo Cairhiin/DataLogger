@@ -6,7 +6,6 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
 use App\Utilities\MessageFileModel;
-use Illuminate\Support\Facades\Auth;
 
 class FileController extends Controller
 {

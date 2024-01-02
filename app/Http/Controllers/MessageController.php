@@ -11,26 +11,6 @@ class MessageController extends Controller
 {
     public function show(Request $request)
     {
-        try {
-            $enc_key = User::findOrFail(Auth()->id())->encryption_key;
-        } catch (ModelNotFoundException $e) {
-            return [
-                'error' => ["status" => "404 Not Found", "message" => [
-                    "header" => "The requested resources was not found!",
-                    "info" => "There appears to be a problem with your user account."
-                ]],
-            ];
-        }
-
-        if (!$enc_key || $enc_key == "") {
-            return [
-                'error' => ["status" => "400 Bad Request", "message" => [
-                    "header" => "You do not have an encryption key!",
-                    "info" => "Please contact an administrator for more information."
-                ]]
-            ];
-        }
-
         $dir = storage_path('logs/');
         $logFiles = getMessageLogFiles();
 
