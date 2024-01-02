@@ -83,7 +83,7 @@ class FileModel
         }
 
         // add an id and created_at field
-        $obj->created_at = $date;
+        $obj->date = $date;
 
         $this->results[] = $obj;
     }
