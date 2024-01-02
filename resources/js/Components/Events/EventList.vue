@@ -6,7 +6,7 @@
                 dark:border-slate-800/75 dark:text-zinc-100 dark:hover:bg-stone-900 cursor-pointer"
         :class="{ 'border-b-0 rounded-b': index === events.length - 1 }">
         <div>
-            {{ formatDate(log.date) }} </div>
+            {{ formatDate(log.created_at) }} </div>
         <div>
             {{ log.ip_address }}
         </div>

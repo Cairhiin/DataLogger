@@ -14,7 +14,7 @@ class MessageFileModel extends FileModel
         "app_id",
         "ip_address",
         "route",
-        "user_id",
+        "remote_user_id",
         "user"
     ];
 

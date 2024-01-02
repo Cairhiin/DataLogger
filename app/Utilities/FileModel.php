@@ -39,8 +39,6 @@ class FileModel
 
         if (!empty($results)) {
             $result = reset($results);
-            //$result->name = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->name);
-            //$result->user_email = Encryption::decryptUsingKey(request()->user()->encryption_key, $result->user_email);
         }
 
         return $result;
@@ -71,6 +69,10 @@ class FileModel
             $content["user"] = User::find($content["user_id"]);
         }
 
+        if (!array_key_exists("remote_user_id", $content)) {
+            $content["remote_user_id"] = User::find($content["user_id"])->id;
+        }
+
         // Assign the attributes to the result object and decrypt those that need decrypting
         foreach ($this->attributes as $attribute) {
             if (array_key_exists($attribute, $content)) {
@@ -82,8 +84,8 @@ class FileModel
             }
         }
 
-        // add an id and created_at field
-        $obj->date = $date;
+        // add date field
+        $obj->created_at = $date;
 
         $this->results[] = $obj;
     }

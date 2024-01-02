@@ -40,7 +40,7 @@ class LogController extends Controller
             'ip_address' => Encryption::encryptUsingKey($enc_key, $request->ip),
             'user_id' => $request->user()->id,
             'date' => $request->date ?? date("Y-m-d H:i:s"),
-            'remote_user_id' => $request->user ?? ''
+            'remote_user_id' => $request->user ?? 1
         ];
 
         // Serialize the log data and publish it on the RabbitMQ stream
