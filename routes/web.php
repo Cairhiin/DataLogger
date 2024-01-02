@@ -23,7 +23,7 @@ use App\Http\Controllers\DashboardController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Dashboard', [
+    return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
