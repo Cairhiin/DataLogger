@@ -30,6 +30,7 @@ class RabbitMQService
         $channel->close();
         $connection->close();
     }
+
     public function consume()
     {
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
@@ -37,10 +38,10 @@ class RabbitMQService
         $channel->queue_declare(env('MQ_QUEUE'), false, true, false, false);
 
         $callback = function ($msg) {
-            $condition = json_decode($msg->body);
+            $condition = unserialize($msg->body);
 
             if (!$condition) {
-                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
             } else {
                 $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
 
