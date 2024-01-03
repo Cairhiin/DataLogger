@@ -34,22 +34,30 @@ class RabbitMQService
     {
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
         $channel = $connection->channel();
+        $channel->queue_declare(env('MQ_QUEUE'), false, true, false, false);
 
         $callback = function ($msg) {
-            $data = unserialize($msg->body);
-            $routingKey = $msg->getRoutingKey();
-            if ($routingKey == "log") {
-                LogEntry::create($data);
-            } else if ($routingKey == "url") {
-                Log::build([
-                    'driver' => 'daily',
-                    'path' => storage_path('logs/user-data.log'),
-                ])->info("URL event for route: {$data['route']} ###", $data);
+            $condition = json_decode($msg->body);
+
+            if (!$condition) {
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            } else {
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+
+                $data = unserialize($msg->body);
+                $routingKey = $msg->getRoutingKey();
+                if ($routingKey == "log") {
+                    LogEntry::create($data);
+                } else if ($routingKey == "url") {
+                    Log::build([
+                        'driver' => 'daily',
+                        'path' => storage_path('logs/user-data.log'),
+                    ])->info("URL event for route: {$data['route']} ###", $data);
+                }
             }
         };
 
-        $channel->queue_declare(env('MQ_QUEUE'), false, true, false, false);
-        $channel->basic_consume(env('MQ_QUEUE'), '', false, true, false, false, $callback);
+        $channel->basic_consume(env('MQ_QUEUE'), '', false, false, false, false, $callback);
         echo 'Waiting for new message on ' . env('MQ_QUEUE'), " \n";
         while ($channel->is_consuming()) {
             $channel->wait();

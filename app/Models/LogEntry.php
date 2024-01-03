@@ -12,6 +12,8 @@ class LogEntry extends Model
     use HasFactory;
 
     const APP_ID = 'Unspecified';
+    const EVENT_TYPE = 'create';
+    const ROUTE = 'dashboard';
 
     protected $table = 'logged_messages';
 
@@ -35,7 +37,9 @@ class LogEntry extends Model
     ];
 
     protected $attributes = [
-        'app_id' => self::APP_ID
+        'event_type' => self::EVENT_TYPE,
+        'app_id' => self::APP_ID,
+        'route' => self::ROUTE
     ];
 
     /**
