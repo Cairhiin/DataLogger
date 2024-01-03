@@ -1,4 +1,4 @@
-export function formatDate(d, type) {
+export function formatDate(d, type = "default") {
     const time = new Date(new Date(d).getTime());
     const date = new Date(d);
 
