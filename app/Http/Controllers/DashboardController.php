@@ -45,6 +45,7 @@ class DashboardController extends Controller
     {
         $logs = LogEntry::whereYear('date', Carbon::now()->year)
             ->whereMonth('date', Carbon::now()->month)
+            ->WhereDay('date', Carbon::now()->day)
             ->get();
 
         return $logs->count();
