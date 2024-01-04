@@ -62,7 +62,7 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4">
+                        <div class="hidden md:flex md:items-center md:ml-6 gap-4">
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
@@ -121,7 +121,7 @@ onMounted(() => {
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="-mr-2 flex items-center md:hidden">
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown">
@@ -196,10 +196,10 @@ onMounted(() => {
             </header>
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto py-6 lg:px-6 lg:flex lg:max-w-full">
+            <main class="max-w-7xl mx-auto py-6 md:px-6 md:flex md:max-w-full">
                 <!-- Sidebar -->
                 <nav class="w-40"><!-- Navigation Links -->
-                    <div class="hidden sm:-my-px sm:flex sm:flex-col">
+                    <div class="hidden md:-my-px md:flex md:flex-col">
                         <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             <span class="fa fa-solid fa-gauge mr-3 opacity-50 transition-all duration-500 w-4"></span>
                             Dashboard
