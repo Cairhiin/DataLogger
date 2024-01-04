@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Utilities\Encryption;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -35,5 +36,16 @@ class Controller extends BaseController
         }
 
         return $enc_key;
+    }
+
+    function roleAuthentication()
+    {
+        $userRole = Auth::user()->role;
+
+        if ($userRole->name == "Super Admin" || $userRole->name == "Admin") {
+            return true;
+        }
+
+        return false;
     }
 }

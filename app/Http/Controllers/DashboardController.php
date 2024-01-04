@@ -24,15 +24,20 @@ class DashboardController extends Controller
             $messagesDate = date("d-m-Y", filemtime($logFiles[0]["name"]));
         }
 
-        $users = User::latest()->take(5)->get();
-        foreach ($users as $user) {
-            $user->role->name;
+        if ($this->roleAuthentication()) {
+            $users = User::latest()->take(5)->get();
+            foreach ($users as $user) {
+                $user->role->name;
+            }
+        } else {
+            $users = null;
         }
 
         $logs = LogEntry::latest()->take(5)->get();
 
         return Inertia::render('Dashboard', [
             'users' => $users,
+            'numberOfUsers' => $this->numberOfUsers(),
             'logs' => $logs,
             'numberOfLogs' => $this->numberOfLogs(),
             'messages' => $messages,
@@ -41,7 +46,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function numberOfLogs()
+    private function numberOfLogs()
     {
         $logs = LogEntry::whereYear('date', Carbon::now()->year)
             ->whereMonth('date', Carbon::now()->month)
@@ -51,7 +56,7 @@ class DashboardController extends Controller
         return $logs->count();
     }
 
-    public function numberOfMessages()
+    private function numberOfMessages()
     {
         $logFiles = getMessageLogFiles();
         $numberOfmessages = 0;
@@ -62,5 +67,15 @@ class DashboardController extends Controller
         }
 
         return $numberOfmessages;
+    }
+
+    private function numberOfUsers()
+    {
+        if ($this->roleAuthentication()) {
+            $users = User::get();
+            return $users->count();
+        }
+
+        return 0;
     }
 }
