@@ -90,8 +90,11 @@ class LogController extends Controller
             $log = LogEntry::findOrFail($request->id);
             $enc_key = $this->getEncryptionKey($request);
 
-            $log->original_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->original_data));
-            $log->new_data = unserialize(Encryption::decryptUsingKey($enc_key, $log->new_data));
+            $original = $log->original_data;
+            $new = $log->new_data;
+            $log->original_data = Encryption::decryptUsingKey($enc_key, $log->original_data);
+            $log->new_data = Encryption::decryptUsingKey($enc_key, $log->new_data);
+
             $log->user;
         } catch (CustomException $e) {
             return  $e->render("There was an error retrieving the requested resource!");

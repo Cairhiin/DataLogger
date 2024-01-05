@@ -71,7 +71,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate } from '@/Utils/index.js';
-import axios from 'axios';
 
 export default {
     data() {
