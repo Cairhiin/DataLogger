@@ -90,8 +90,6 @@ class LogController extends Controller
             $log = LogEntry::findOrFail($request->id);
             $enc_key = $this->getEncryptionKey($request);
 
-            $original = $log->original_data;
-            $new = $log->new_data;
             $log->original_data = Encryption::decryptUsingKey($enc_key, $log->original_data);
             $log->new_data = Encryption::decryptUsingKey($enc_key, $log->new_data);
 
